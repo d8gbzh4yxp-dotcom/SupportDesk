@@ -32,7 +32,7 @@ public class UserDAODemo implements UserDAO {
     private static final Map<String, User> STORE = new LinkedHashMap<>();
 
     static {
-        User admin = new User(1, "Admin", "Sistema", "admin@supportdesk.it", DEMO_PASSWORD_HASH, Role.ADMIN);
+        User admin = new User(1, "Admin", "Sistema", "admin@supportdesk.it", DEMO_PASSWORD_HASH, Role.MANAGER);
         User tech1 = new User(2, "Marco", "Bianchi", "marco.bianchi@supportdesk.it", DEMO_PASSWORD_HASH, Role.TECHNICIAN);
         User tech2 = new User(3, "Laura", "Verdi", "laura.verdi@supportdesk.it", DEMO_PASSWORD_HASH, Role.TECHNICIAN);
         tech1.setSpecialization("Email e Posta Elettronica");
