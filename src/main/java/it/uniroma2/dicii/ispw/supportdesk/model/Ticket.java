@@ -49,14 +49,14 @@ public class Ticket {
     }
 
     public Ticket(int id, String title, String description, Category category, Priority priority,
-                  LocalDateTime dataApertura, LocalDateTime scadenzaSla, TicketStatus status) {
+                  LocalDateTime dataApertura, TicketStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.priority = priority;
         this.dataApertura = dataApertura;
-        this.scadenzaSla = scadenzaSla;
+        this.scadenzaSla = dataApertura.plusHours(priority.getMaxSlaHours());
         this.status = status;
     }
 

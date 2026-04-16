@@ -21,8 +21,6 @@ import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,30 +52,13 @@ public class UserDAOFile implements UserDAO {
     @Override
     public void insert(User user) throws DAOException {
         int nextId = computeNextId();
-        String line = buildLine(nextId, user);
-        try (BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(DATA_FILE, true), StandardCharsets.UTF_8))) {
-            bw.write(line);
-            bw.newLine();
-            LOG.debug("Utente inserito: {}", user.obtainEmail());
-        } catch (IOException e) {
-            throw new DAOException("Errore insert user su file", e);
-        }
+        CsvFileStore.appendLine(DATA_FILE, buildLine(nextId, user));
+        if (LOG.isDebugEnabled()) LOG.debug("Utente inserito: {}", user.obtainEmail());
     }
 
     private List<User> readAll() throws DAOException {
         List<User> list = new ArrayList<>();
-        File file = new File(DATA_FILE);
-        if (!file.exists()) return list;
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.isBlank()) list.add(parseLine(line));
-            }
-        } catch (IOException e) {
-            throw new DAOException("Errore lettura users.csv", e);
-        }
+        for (String line : CsvFileStore.readLines(DATA_FILE)) list.add(parseLine(line));
         return list;
     }
 

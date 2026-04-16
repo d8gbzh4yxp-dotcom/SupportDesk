@@ -24,8 +24,6 @@ import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +39,13 @@ public class TicketDAOFile implements TicketDAO {
     @Override
     public void insert(Ticket ticket) throws DAOException {
         int nextId = computeNextId();
-        String line = buildLine(nextId, ticket, null);
-        try (BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(DATA_FILE, true), StandardCharsets.UTF_8))) {
-            bw.write(line);
-            bw.newLine();
-        } catch (IOException e) {
-            throw new DAOException("Errore insert ticket su file", e);
-        }
+        CsvFileStore.appendLine(DATA_FILE, buildLine(nextId, ticket));
+        if (LOG.isDebugEnabled()) LOG.debug("Ticket inserito id={}", nextId);
     }
 
     @Override
     public Ticket findById(int id) throws DAOException, TicketNotFoundException {
-        for (Ticket t : readAll()) {
+        for (Ticket t : findAll()) {
             if (t.getId() == id) return t;
         }
         throw new TicketNotFoundException("Ticket non trovato: " + id);
@@ -61,13 +53,15 @@ public class TicketDAOFile implements TicketDAO {
 
     @Override
     public List<Ticket> findAll() throws DAOException {
-        return readAll();
+        List<Ticket> list = new ArrayList<>();
+        for (String line : CsvFileStore.readLines(DATA_FILE)) list.add(parseLine(line));
+        return list;
     }
 
     @Override
     public List<Ticket> findByUserEmail(String email) throws DAOException {
         List<Ticket> result = new ArrayList<>();
-        for (Ticket t : readAll()) {
+        for (Ticket t : findAll()) {
             if (t.getAssignedTechnician() != null
                     && email.equals(t.getAssignedTechnician().obtainEmail())) {
                 result.add(t);
@@ -78,65 +72,30 @@ public class TicketDAOFile implements TicketDAO {
 
     @Override
     public void update(Ticket ticket) throws DAOException, TicketNotFoundException {
-        List<String> lines = readRawLines();
+        List<String> raw = CsvFileStore.readLines(DATA_FILE);
         boolean found = false;
         List<String> updated = new ArrayList<>();
-        for (String line : lines) {
-            String[] parts = line.split("\\|", FIELDS);
-            if (Integer.parseInt(parts[0]) == ticket.getId()) {
-                String techEmail = ticket.getAssignedTechnician() != null
-                    ? ticket.getAssignedTechnician().obtainEmail() : NULL_TOKEN;
-                updated.add(buildLine(ticket.getId(), ticket, techEmail));
+        for (String line : raw) {
+            if (Integer.parseInt(line.split("\\|", 2)[0]) == ticket.getId()) {
+                updated.add(buildLine(ticket.getId(), ticket));
                 found = true;
             } else {
                 updated.add(line);
             }
         }
         if (!found) throw new TicketNotFoundException("Ticket non trovato: " + ticket.getId());
-        writeAllLines(updated);
+        CsvFileStore.writeLines(DATA_FILE, updated);
     }
 
     @Override
     public void delete(int id) throws DAOException {
-        List<String> lines = readRawLines();
+        List<String> raw = CsvFileStore.readLines(DATA_FILE);
         List<String> filtered = new ArrayList<>();
-        for (String line : lines) {
-            String[] parts = line.split("\\|", FIELDS);
-            if (Integer.parseInt(parts[0]) != id) filtered.add(line);
+        for (String line : raw) {
+            if (Integer.parseInt(line.split("\\|", 2)[0]) != id) filtered.add(line);
         }
-        writeAllLines(filtered);
-        LOG.debug("Ticket eliminato id={}", id);
-    }
-
-    private List<Ticket> readAll() throws DAOException {
-        List<Ticket> list = new ArrayList<>();
-        for (String line : readRawLines()) list.add(parseLine(line));
-        return list;
-    }
-
-    private List<String> readRawLines() throws DAOException {
-        List<String> lines = new ArrayList<>();
-        File file = new File(DATA_FILE);
-        if (!file.exists()) return lines;
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.isBlank()) lines.add(line);
-            }
-        } catch (IOException e) {
-            throw new DAOException("Errore lettura tickets.csv", e);
-        }
-        return lines;
-    }
-
-    private void writeAllLines(List<String> lines) throws DAOException {
-        try (BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(DATA_FILE, false), StandardCharsets.UTF_8))) {
-            for (String line : lines) { bw.write(line); bw.newLine(); }
-        } catch (IOException e) {
-            throw new DAOException("Errore scrittura tickets.csv", e);
-        }
+        CsvFileStore.writeLines(DATA_FILE, filtered);
+        if (LOG.isDebugEnabled()) LOG.debug("Ticket eliminato id={}", id);
     }
 
     private Ticket parseLine(String line) throws DAOException {
@@ -149,24 +108,25 @@ public class TicketDAOFile implements TicketDAO {
             Priority priority   = Priority.valueOf(p[4]);
             TicketStatus status = TicketStatus.valueOf(p[5]);
             LocalDateTime data  = LocalDateTime.parse(p[6]);
-            LocalDateTime sla   = LocalDateTime.parse(p[7]);
-            return new Ticket(id, title, description, category, priority, data, sla, status);
+            // p[7] = scadenzaSla stored for reference; recalculated in constructor
+            return new Ticket(id, title, description, category, priority, data, status);
         } catch (Exception e) {
             throw new DAOException("Errore parsing riga ticket: " + line, e);
         }
     }
 
-    private String buildLine(int id, Ticket t, String techEmail) {
-        String te = (techEmail == null || techEmail.isBlank()) ? NULL_TOKEN : techEmail;
+    private String buildLine(int id, Ticket t) {
+        String techEmail = t.getAssignedTechnician() != null
+            ? t.getAssignedTechnician().obtainEmail() : NULL_TOKEN;
         return id + SEP + t.getTitle() + SEP + t.getDescription() + SEP
             + t.getCategory().name() + SEP + t.getPriority().name() + SEP
             + t.getStatus().name() + SEP + t.getDataApertura() + SEP
-            + t.getScadenzaSla() + SEP + te;
+            + t.getScadenzaSla() + SEP + techEmail;
     }
 
     private int computeNextId() throws DAOException {
         int max = 0;
-        for (String line : readRawLines()) {
+        for (String line : CsvFileStore.readLines(DATA_FILE)) {
             int id = Integer.parseInt(line.split("\\|", 2)[0]);
             if (id > max) max = id;
         }

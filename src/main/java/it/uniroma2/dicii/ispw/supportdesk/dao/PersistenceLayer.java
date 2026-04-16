@@ -26,6 +26,9 @@ import java.util.List;
 
 public abstract class PersistenceLayer {
 
+    protected TicketDAO ticketDAO;
+    protected UserDAO   userDAO;
+
     public static PersistenceLayer getInstance() {
         ApplicationMode mode = ApplicationModeManager.getInstance().getMode();
         if (mode == ApplicationMode.DEMO) {
@@ -36,23 +39,41 @@ public abstract class PersistenceLayer {
 
     // ── Ticket ────────────────────────────────────────────────────────────────
 
-    public abstract void insertTicket(Ticket ticket) throws DAOException;
+    public void insertTicket(Ticket ticket) throws DAOException {
+        ticketDAO.insert(ticket);
+    }
 
-    public abstract Ticket findTicketById(int id) throws DAOException, TicketNotFoundException;
+    public Ticket findTicketById(int id) throws DAOException, TicketNotFoundException {
+        return ticketDAO.findById(id);
+    }
 
-    public abstract List<Ticket> findAllTickets() throws DAOException;
+    public List<Ticket> findAllTickets() throws DAOException {
+        return ticketDAO.findAll();
+    }
 
-    public abstract List<Ticket> findTicketsByUserEmail(String email) throws DAOException;
+    public List<Ticket> findTicketsByUserEmail(String email) throws DAOException {
+        return ticketDAO.findByUserEmail(email);
+    }
 
-    public abstract void updateTicket(Ticket ticket) throws DAOException, TicketNotFoundException;
+    public void updateTicket(Ticket ticket) throws DAOException, TicketNotFoundException {
+        ticketDAO.update(ticket);
+    }
 
-    public abstract void deleteTicket(int id) throws DAOException;
+    public void deleteTicket(int id) throws DAOException {
+        ticketDAO.delete(id);
+    }
 
     // ── User ──────────────────────────────────────────────────────────────────
 
-    public abstract User findUserByEmail(String email) throws DAOException;
+    public User findUserByEmail(String email) throws DAOException {
+        return userDAO.findByEmail(email);
+    }
 
-    public abstract List<User> findUsersByRole(Role role) throws DAOException;
+    public List<User> findUsersByRole(Role role) throws DAOException {
+        return userDAO.findByRole(role);
+    }
 
-    public abstract void insertUser(User user) throws DAOException;
+    public void insertUser(User user) throws DAOException {
+        userDAO.insert(user);
+    }
 }

@@ -30,10 +30,12 @@ public class UserDAODB implements UserDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDAODB.class);
 
+    private static final String USER_COLS =
+        "id, name, surname, email, credential_hash, role, specialization";
     private static final String SQL_FIND_BY_EMAIL =
-        "SELECT * FROM users WHERE email = ?";
+        "SELECT " + USER_COLS + " FROM users WHERE email = ?";
     private static final String SQL_FIND_BY_ROLE =
-        "SELECT * FROM users WHERE role = ?";
+        "SELECT " + USER_COLS + " FROM users WHERE role = ?";
     private static final String SQL_INSERT =
         "INSERT INTO users (name, surname, email, credential_hash, role, specialization) VALUES (?,?,?,?,?,?)";
 
@@ -77,7 +79,7 @@ public class UserDAODB implements UserDAO {
             ps.setString(5, user.obtainRole().name());
             ps.setString(6, user.obtainSpecialization());
             ps.executeUpdate();
-            LOG.debug("Utente inserito: {}", user.obtainEmail());
+            if (LOG.isDebugEnabled()) LOG.debug("Utente inserito: {}", user.obtainEmail());
         } catch (SQLException e) {
             throw new DAOException("Errore insert user", e);
         }

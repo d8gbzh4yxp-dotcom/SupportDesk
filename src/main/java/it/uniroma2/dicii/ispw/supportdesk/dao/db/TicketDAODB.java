@@ -36,12 +36,14 @@ public class TicketDAODB implements TicketDAO {
 
     private static final String SQL_INSERT =
         "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla) VALUES (?,?,?,?,?,?,?)";
+    private static final String TICKET_COLS =
+        "id, title, description, category, priority, status, data_apertura, assigned_technician_email";
     private static final String SQL_FIND_BY_ID =
-        "SELECT * FROM tickets WHERE id = ?";
+        "SELECT " + TICKET_COLS + " FROM tickets WHERE id = ?";
     private static final String SQL_FIND_ALL =
-        "SELECT * FROM tickets";
+        "SELECT " + TICKET_COLS + " FROM tickets";
     private static final String SQL_FIND_BY_EMAIL =
-        "SELECT * FROM tickets WHERE assigned_technician_email = ?";
+        "SELECT " + TICKET_COLS + " FROM tickets WHERE assigned_technician_email = ?";
     private static final String SQL_UPDATE =
         "UPDATE tickets SET status = ?, assigned_technician_email = ? WHERE id = ?";
     private static final String SQL_DELETE =
@@ -59,7 +61,7 @@ public class TicketDAODB implements TicketDAO {
             ps.setTimestamp(6, Timestamp.valueOf(ticket.getDataApertura()));
             ps.setTimestamp(7, Timestamp.valueOf(ticket.getScadenzaSla()));
             ps.executeUpdate();
-            LOG.debug("Ticket inserito: {}", ticket.getTitle());
+            if (LOG.isDebugEnabled()) LOG.debug("Ticket inserito: {}", ticket.getTitle());
         } catch (SQLException e) {
             throw new DAOException("Errore insert ticket", e);
         }
@@ -129,7 +131,7 @@ public class TicketDAODB implements TicketDAO {
              PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
             ps.setInt(1, id);
             ps.executeUpdate();
-            LOG.debug("Ticket eliminato id={}", id);
+            if (LOG.isDebugEnabled()) LOG.debug("Ticket eliminato id={}", id);
         } catch (SQLException e) {
             throw new DAOException("Errore delete ticket", e);
         }
@@ -141,9 +143,8 @@ public class TicketDAODB implements TicketDAO {
         String description  = rs.getString("description");
         Category category   = Category.valueOf(rs.getString("category"));
         Priority priority   = Priority.valueOf(rs.getString("priority"));
-        LocalDateTime data  = rs.getTimestamp("data_apertura").toLocalDateTime();
-        LocalDateTime sla   = rs.getTimestamp("scadenza_sla").toLocalDateTime();
         TicketStatus status = TicketStatus.valueOf(rs.getString("status"));
-        return new Ticket(id, title, description, category, priority, data, sla, status);
+        LocalDateTime data  = rs.getTimestamp("data_apertura").toLocalDateTime();
+        return new Ticket(id, title, description, category, priority, data, status);
     }
 }
