@@ -32,10 +32,9 @@ public class UserDAODB implements UserDAO {
 
     private static final String USER_COLS =
         "id, name, surname, email, credential_hash, role, specialization";
-    private static final String SQL_FIND_BY_EMAIL =
-        "SELECT " + USER_COLS + " FROM users WHERE email = ?";
-    private static final String SQL_FIND_BY_ROLE =
-        "SELECT " + USER_COLS + " FROM users WHERE role = ?";
+    private static final String SELECT_USERS      = "SELECT " + USER_COLS + " FROM users";
+    private static final String SQL_FIND_BY_EMAIL = SELECT_USERS + " WHERE email = ?";
+    private static final String SQL_FIND_BY_ROLE  = SELECT_USERS + " WHERE role = ?";
     private static final String SQL_INSERT =
         "INSERT INTO users (name, surname, email, credential_hash, role, specialization) VALUES (?,?,?,?,?,?)";
 

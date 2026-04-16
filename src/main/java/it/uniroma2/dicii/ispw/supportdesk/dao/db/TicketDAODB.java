@@ -38,12 +38,10 @@ public class TicketDAODB implements TicketDAO {
         "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla) VALUES (?,?,?,?,?,?,?)";
     private static final String TICKET_COLS =
         "id, title, description, category, priority, status, data_apertura, assigned_technician_email";
-    private static final String SQL_FIND_BY_ID =
-        "SELECT " + TICKET_COLS + " FROM tickets WHERE id = ?";
-    private static final String SQL_FIND_ALL =
-        "SELECT " + TICKET_COLS + " FROM tickets";
-    private static final String SQL_FIND_BY_EMAIL =
-        "SELECT " + TICKET_COLS + " FROM tickets WHERE assigned_technician_email = ?";
+    private static final String SELECT_TICKETS = "SELECT " + TICKET_COLS + " FROM tickets";
+    private static final String SQL_FIND_BY_ID    = SELECT_TICKETS + " WHERE id = ?";
+    private static final String SQL_FIND_ALL      = SELECT_TICKETS;
+    private static final String SQL_FIND_BY_EMAIL = SELECT_TICKETS + " WHERE assigned_technician_email = ?";
     private static final String SQL_UPDATE =
         "UPDATE tickets SET status = ?, assigned_technician_email = ? WHERE id = ?";
     private static final String SQL_DELETE =
