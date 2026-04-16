@@ -14,42 +14,136 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.dao.db;
 
+import it.uniroma2.dicii.ispw.supportdesk.dao.ConnectionManager;
 import it.uniroma2.dicii.ispw.supportdesk.dao.TicketDAO;
+import it.uniroma2.dicii.ispw.supportdesk.enumerator.Category;
+import it.uniroma2.dicii.ispw.supportdesk.enumerator.Priority;
+import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAODB implements TicketDAO {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TicketDAODB.class);
+
+    private static final String SQL_INSERT =
+        "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_FIND_BY_ID =
+        "SELECT * FROM tickets WHERE id = ?";
+    private static final String SQL_FIND_ALL =
+        "SELECT * FROM tickets";
+    private static final String SQL_FIND_BY_EMAIL =
+        "SELECT * FROM tickets WHERE assigned_technician_email = ?";
+    private static final String SQL_UPDATE =
+        "UPDATE tickets SET status = ?, assigned_technician_email = ? WHERE id = ?";
+    private static final String SQL_DELETE =
+        "DELETE FROM tickets WHERE id = ?";
+
     @Override
     public void insert(Ticket ticket) throws DAOException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
+            ps.setString(1, ticket.getTitle());
+            ps.setString(2, ticket.getDescription());
+            ps.setString(3, ticket.getCategory().name());
+            ps.setString(4, ticket.getPriority().name());
+            ps.setString(5, ticket.getStatus().name());
+            ps.setTimestamp(6, Timestamp.valueOf(ticket.getDataApertura()));
+            ps.setTimestamp(7, Timestamp.valueOf(ticket.getScadenzaSla()));
+            ps.executeUpdate();
+            LOG.debug("Ticket inserito: {}", ticket.getTitle());
+        } catch (SQLException e) {
+            throw new DAOException("Errore insert ticket", e);
+        }
     }
 
     @Override
     public Ticket findById(int id) throws DAOException, TicketNotFoundException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_FIND_BY_ID)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) throw new TicketNotFoundException("Ticket non trovato: " + id);
+                return mapRow(rs);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Errore findById ticket", e);
+        }
     }
 
     @Override
     public List<Ticket> findAll() throws DAOException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        List<Ticket> list = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_FIND_ALL);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) {
+            throw new DAOException("Errore findAll ticket", e);
+        }
+        return list;
     }
 
     @Override
     public List<Ticket> findByUserEmail(String email) throws DAOException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        List<Ticket> list = new ArrayList<>();
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_FIND_BY_EMAIL)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Errore findByUserEmail ticket", e);
+        }
+        return list;
     }
 
     @Override
     public void update(Ticket ticket) throws DAOException, TicketNotFoundException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
+            ps.setString(1, ticket.getStatus().name());
+            String techEmail = ticket.getAssignedTechnician() != null
+                ? ticket.getAssignedTechnician().obtainEmail() : null;
+            ps.setString(2, techEmail);
+            ps.setInt(3, ticket.getId());
+            int rows = ps.executeUpdate();
+            if (rows == 0) throw new TicketNotFoundException("Ticket non trovato: " + ticket.getId());
+        } catch (SQLException e) {
+            throw new DAOException("Errore update ticket", e);
+        }
     }
 
     @Override
     public void delete(int id) throws DAOException {
-        throw new DAOException("TicketDAODB non ancora implementato");
+        try (Connection conn = ConnectionManager.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            LOG.debug("Ticket eliminato id={}", id);
+        } catch (SQLException e) {
+            throw new DAOException("Errore delete ticket", e);
+        }
+    }
+
+    private Ticket mapRow(ResultSet rs) throws SQLException {
+        int id              = rs.getInt("id");
+        String title        = rs.getString("title");
+        String description  = rs.getString("description");
+        Category category   = Category.valueOf(rs.getString("category"));
+        Priority priority   = Priority.valueOf(rs.getString("priority"));
+        LocalDateTime data  = rs.getTimestamp("data_apertura").toLocalDateTime();
+        LocalDateTime sla   = rs.getTimestamp("scadenza_sla").toLocalDateTime();
+        TicketStatus status = TicketStatus.valueOf(rs.getString("status"));
+        return new Ticket(id, title, description, category, priority, data, sla, status);
     }
 }

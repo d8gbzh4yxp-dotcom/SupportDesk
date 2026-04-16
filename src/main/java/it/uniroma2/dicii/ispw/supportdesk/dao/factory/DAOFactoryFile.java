@@ -16,19 +16,18 @@ package it.uniroma2.dicii.ispw.supportdesk.dao.factory;
 
 import it.uniroma2.dicii.ispw.supportdesk.dao.TicketDAO;
 import it.uniroma2.dicii.ispw.supportdesk.dao.UserDAO;
-import it.uniroma2.dicii.ispw.supportdesk.enumerator.ApplicationMode;
+import it.uniroma2.dicii.ispw.supportdesk.dao.file.TicketDAOFile;
+import it.uniroma2.dicii.ispw.supportdesk.dao.file.UserDAOFile;
 
-public abstract class DAOAbstractFactory {
+public class DAOFactoryFile extends DAOAbstractFactory {
 
-    public static DAOAbstractFactory getFactory(ApplicationMode mode) {
-        return switch (mode) {
-            case DEMO      -> new DAOFactoryDemo();
-            case FULL_DB   -> new DAOFactoryDB();
-            case FULL_FILE -> new DAOFactoryFile();
-        };
+    @Override
+    public TicketDAO createTicketDAO() {
+        return new TicketDAOFile();
     }
 
-    public abstract TicketDAO createTicketDAO();
-
-    public abstract UserDAO createUserDAO();
+    @Override
+    public UserDAO createUserDAO() {
+        return new UserDAOFile();
+    }
 }

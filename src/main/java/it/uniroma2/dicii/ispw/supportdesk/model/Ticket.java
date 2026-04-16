@@ -48,6 +48,18 @@ public class Ticket {
         this.status = TicketStatus.OPEN;
     }
 
+    public Ticket(int id, String title, String description, Category category, Priority priority,
+                  LocalDateTime dataApertura, LocalDateTime scadenzaSla, TicketStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.priority = priority;
+        this.dataApertura = dataApertura;
+        this.scadenzaSla = scadenzaSla;
+        this.status = status;
+    }
+
     /**
      * Unico metodo business del model: cambia stato rispettando la state machine.
      *

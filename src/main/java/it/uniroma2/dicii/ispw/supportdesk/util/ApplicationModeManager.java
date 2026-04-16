@@ -12,23 +12,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package it.uniroma2.dicii.ispw.supportdesk.dao.factory;
+package it.uniroma2.dicii.ispw.supportdesk.util;
 
-import it.uniroma2.dicii.ispw.supportdesk.dao.TicketDAO;
-import it.uniroma2.dicii.ispw.supportdesk.dao.UserDAO;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.ApplicationMode;
 
-public abstract class DAOAbstractFactory {
+public final class ApplicationModeManager {
 
-    public static DAOAbstractFactory getFactory(ApplicationMode mode) {
-        return switch (mode) {
-            case DEMO      -> new DAOFactoryDemo();
-            case FULL_DB   -> new DAOFactoryDB();
-            case FULL_FILE -> new DAOFactoryFile();
-        };
+    private volatile ApplicationMode mode = ApplicationMode.DEMO;
+
+    private ApplicationModeManager() {}
+
+    private static final class Holder {
+        private static final ApplicationModeManager INSTANCE = new ApplicationModeManager();
     }
 
-    public abstract TicketDAO createTicketDAO();
+    public static ApplicationModeManager getInstance() {
+        return Holder.INSTANCE;
+    }
 
-    public abstract UserDAO createUserDAO();
+    public ApplicationMode getMode() {
+        return mode;
+    }
+
+    public void setMode(ApplicationMode mode) {
+        this.mode = mode;
+    }
 }

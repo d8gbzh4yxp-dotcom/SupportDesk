@@ -26,19 +26,18 @@ import java.util.Map;
 
 public class UserDAODemo implements UserDAO {
 
-    // SHA-256 di "demo1234" — placeholder per modalità demo
-    private static final String DEMO_PASSWORD_HASH = "DEMO_HASH_PLACEHOLDER";
+    private static final String DEMO_CREDENTIAL_HASH = "DEMO_HASH_PLACEHOLDER";
 
     private static final Map<String, User> STORE = new LinkedHashMap<>();
 
     static {
-        User admin = new User(1, "Admin", "Sistema", "admin@supportdesk.it", DEMO_PASSWORD_HASH, Role.MANAGER);
-        User tech1 = new User(2, "Marco", "Bianchi", "marco.bianchi@supportdesk.it", DEMO_PASSWORD_HASH, Role.TECHNICIAN);
-        User tech2 = new User(3, "Laura", "Verdi", "laura.verdi@supportdesk.it", DEMO_PASSWORD_HASH, Role.TECHNICIAN);
+        User admin = new User(1, "Admin", "Sistema", "admin@supportdesk.it", DEMO_CREDENTIAL_HASH, Role.MANAGER);
+        User tech1 = new User(2, "Marco", "Bianchi", "marco.bianchi@supportdesk.it", DEMO_CREDENTIAL_HASH, Role.TECHNICIAN);
+        User tech2 = new User(3, "Laura", "Verdi", "laura.verdi@supportdesk.it", DEMO_CREDENTIAL_HASH, Role.TECHNICIAN);
         tech1.setSpecialization("Email e Posta Elettronica");
         tech2.setSpecialization("Reti e Connettività");
-        User user1 = new User(4, "Giovanni", "Rossi", "giovanni.rossi@azienda.it", DEMO_PASSWORD_HASH, Role.USER);
-        User user2 = new User(5, "Sara", "Neri", "sara.neri@azienda.it", DEMO_PASSWORD_HASH, Role.USER);
+        User user1 = new User(4, "Giovanni", "Rossi", "giovanni.rossi@azienda.it", DEMO_CREDENTIAL_HASH, Role.USER);
+        User user2 = new User(5, "Sara", "Neri", "sara.neri@azienda.it", DEMO_CREDENTIAL_HASH, Role.USER);
 
         STORE.put(admin.obtainEmail(), admin);
         STORE.put(tech1.obtainEmail(), tech1);

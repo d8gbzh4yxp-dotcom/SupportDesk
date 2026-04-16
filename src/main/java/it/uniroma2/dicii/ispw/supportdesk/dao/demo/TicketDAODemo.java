@@ -25,11 +25,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TicketDAODemo implements TicketDAO {
 
     private static final Map<Integer, Ticket> STORE = new LinkedHashMap<>();
-    private static int nextId = 11;
+    private static final AtomicInteger nextId = new AtomicInteger(11);
 
     static {
         // cluster email (4 ticket)
@@ -54,7 +55,7 @@ public class TicketDAODemo implements TicketDAO {
         if (ticket == null) {
             throw new DAOException("Ticket non può essere null");
         }
-        STORE.put(nextId++, ticket);
+        STORE.put(nextId.getAndIncrement(), ticket);
     }
 
     @Override
