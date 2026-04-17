@@ -20,7 +20,7 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
-import it.uniroma2.dicii.ispw.supportdesk.util.ApplicationModeManager;
+import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.ApplicationModeManager;
 
 import java.util.List;
 

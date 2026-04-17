@@ -15,7 +15,7 @@
 package it.uniroma2.dicii.ispw.supportdesk.dao;
 
 import it.uniroma2.dicii.ispw.supportdesk.dao.factory.DAOAbstractFactory;
-import it.uniroma2.dicii.ispw.supportdesk.util.ApplicationModeManager;
+import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.ApplicationModeManager;
 
 public class PersistenceLayerFull extends PersistenceLayer {
 
