@@ -21,8 +21,7 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
-import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.UserSession;
-
+@SuppressWarnings("java:S6548")
 public final class SubmitTicketFacade {
 
     private SubmitTicketFacade() {}

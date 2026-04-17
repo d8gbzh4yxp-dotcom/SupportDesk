@@ -25,6 +25,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+@SuppressWarnings("java:S6548")
 public final class ConnectionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConnectionManager.class);

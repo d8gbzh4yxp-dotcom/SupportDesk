@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+@SuppressWarnings("java:S6548")
 public final class CorrelationEngine {
 
     private static final Logger log = LoggerFactory.getLogger(CorrelationEngine.class);

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@SuppressWarnings("java:S6548")
 public final class ConfigLoader {
 
     private static final Logger log = LoggerFactory.getLogger(ConfigLoader.class);
