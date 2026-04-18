@@ -77,12 +77,12 @@ public class TicketController implements TicketSubject {
 
     public List<TicketRecord> getAllTickets() throws DAOException {
         return PersistenceLayer.getInstance().findAllTickets()
-                .stream().map(this::toRecord).toList();
+                .stream().map(TicketController::toRecord).toList();
     }
 
     public List<TicketRecord> getTicketsByUser(String email) throws DAOException {
         return PersistenceLayer.getInstance().findTicketsByUserEmail(email)
-                .stream().map(this::toRecord).toList();
+                .stream().map(TicketController::toRecord).toList();
     }
 
     public TicketRecord changeStatus(int id, TicketStatus newStatus)

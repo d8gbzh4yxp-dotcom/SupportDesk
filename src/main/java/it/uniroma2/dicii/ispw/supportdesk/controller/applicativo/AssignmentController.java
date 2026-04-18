@@ -31,7 +31,9 @@ import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.Workload
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AssignmentController {
 
@@ -41,21 +43,37 @@ public class AssignmentController {
             throws DAOException, TicketNotFoundException, AssignmentException, InvalidTransitionException {
         Ticket ticket = PersistenceLayer.getInstance().findTicketById(ticketId);
         List<User> technicians = PersistenceLayer.getInstance().findUsersByRole(Role.TECHNICIAN);
-        AssignmentHandler chain = buildChain();
+        List<Ticket> allTickets = PersistenceLayer.getInstance().findAllTickets();
+        Map<String, Integer> workloadMap = computeWorkloadMap(allTickets);
+        AssignmentHandler chain = buildChain(workloadMap);
         User technician = chain.handle(ticket, technicians);
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
-        log.info("Ticket {} assegnato a {}", ticketId, technician.obtainEmail());
+        if (log.isInfoEnabled()) {
+            log.info("Ticket {} assegnato a {}", ticketId, technician.obtainEmail());
+        }
         return TicketController.toRecord(ticket);
     }
 
-    private AssignmentHandler buildChain() {
+    private AssignmentHandler buildChain(Map<String, Integer> workloadMap) {
         AssignmentHandler expertise = new ExpertiseHandler();
-        AssignmentHandler workload  = new WorkloadHandler();
+        AssignmentHandler workload  = new WorkloadHandler(workloadMap);
         AssignmentHandler fallback  = new DefaultHandler();
         expertise.setNext(workload);
         workload.setNext(fallback);
         return expertise;
+    }
+
+    private Map<String, Integer> computeWorkloadMap(List<Ticket> allTickets) {
+        Map<String, Integer> map = new HashMap<>();
+        for (Ticket t : allTickets) {
+            if (t.getAssignedTechnician() != null && t.getStatus() != TicketStatus.RESOLVED
+                    && t.getStatus() != TicketStatus.CLOSED) {
+                String email = t.getAssignedTechnician().obtainEmail();
+                map.merge(email, 1, Integer::sum);
+            }
+        }
+        return map;
     }
 }

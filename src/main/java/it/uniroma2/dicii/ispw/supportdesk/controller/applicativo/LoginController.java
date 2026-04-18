@@ -34,7 +34,7 @@ import java.security.NoSuchAlgorithmException;
 public class LoginController {
 
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
-    private static final String DEMO_PASSWORD_HASH = "DEMO_HASH_PLACEHOLDER";
+    private static final String DEMO_CREDENTIAL_HASH = "DEMO_HASH_PLACEHOLDER";
     private static final String SHA_256 = "SHA-256";
 
     public LoginRecord authenticate(LoginBean bean)
@@ -56,7 +56,7 @@ public class LoginController {
     private void verifyPassword(String inputHash, User user) throws AuthenticationException {
         boolean valid;
         if (ApplicationModeManager.getInstance().getMode() == ApplicationMode.DEMO) {
-            valid = DEMO_PASSWORD_HASH.equals(inputHash) || DEMO_PASSWORD_HASH.equals(user.obtainPasswordHash());
+            valid = DEMO_CREDENTIAL_HASH.equals(inputHash) || DEMO_CREDENTIAL_HASH.equals(user.obtainPasswordHash());
         } else {
             valid = user.obtainPasswordHash().equals(inputHash);
         }
