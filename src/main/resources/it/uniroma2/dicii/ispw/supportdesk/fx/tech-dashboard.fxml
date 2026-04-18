@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="it.uniroma2.dicii.ispw.supportdesk.boundary.javafx.TechDashboardControllerGrafico"
+            style="-fx-background-color: #ECEFF1;">
+
+    <!-- ── HEADER ──────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #1A237E; -fx-padding: 14 20;">
+            <Label text="SupportDesk"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label text="/ Tecnico"
+                   style="-fx-text-fill: #90CAF9; -fx-font-size: 14px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel"
+                   style="-fx-text-fill: #E3F2FD; -fx-font-size: 13px;"/>
+            <Button text="Logout" onAction="#onLogout"
+                    style="-fx-background-color: transparent; -fx-text-fill: #90CAF9;
+                           -fx-border-color: #90CAF9; -fx-border-radius: 4; -fx-cursor: hand; -fx-padding: 5 12;"/>
+        </HBox>
+    </top>
+
+    <!-- ── CONTENUTO ───────────────────────────────────────────── -->
+    <center>
+        <VBox spacing="16">
+            <padding><Insets top="16" bottom="16" left="16" right="16"/></padding>
+
+            <!-- SEZIONE TICKET -->
+            <VBox spacing="12"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
+                <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Ticket Assegnati"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Aggiorna" onAction="#onRefresh"
+                            style="-fx-background-color: #E3F2FD; -fx-text-fill: #1565C0;
+                                   -fx-border-color: #90CAF9; -fx-border-radius: 4; -fx-cursor: hand; -fx-padding: 5 10;"/>
+                </HBox>
+                <Separator/>
+
+                <TableView fx:id="ticketTable" prefHeight="260">
+                    <columns>
+                        <TableColumn fx:id="colId"       text="ID"        prefWidth="50"/>
+                        <TableColumn fx:id="colTitle"    text="Titolo"    prefWidth="220"/>
+                        <TableColumn fx:id="colCategory" text="Categoria" prefWidth="110"/>
+                        <TableColumn fx:id="colPriority" text="Priorità"  prefWidth="90"/>
+                        <TableColumn fx:id="colStatus"   text="Stato"     prefWidth="120"/>
+                        <TableColumn fx:id="colSla"      text="Scadenza SLA" prefWidth="150"/>
+                    </columns>
+                </TableView>
+
+                <!-- Azioni sul ticket selezionato -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="actionErrorLabel" text=""
+                           style="-fx-text-fill: #C62828; -fx-font-size: 11px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Prendi in carico" onAction="#onTakeCharge"
+                            style="-fx-background-color: #F57F17; -fx-text-fill: white;
+                                   -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    <Button text="Segna come Risolto" onAction="#onResolve"
+                            style="-fx-background-color: #2E7D32; -fx-text-fill: white;
+                                   -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+
+            <!-- SEZIONE KNOWLEDGE BASE -->
+            <VBox spacing="12"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
+                <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                <Label text="Knowledge Base"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
+                <Separator/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="kbSearchField" promptText="Cerca soluzione..."
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-padding: 8; -fx-background-radius: 4;
+                                      -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+                    <Button text="Cerca" onAction="#onKbSearch"
+                            style="-fx-background-color: #1565C0; -fx-text-fill: white;
+                                   -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
+
+                <ListView fx:id="kbResultsList" prefHeight="120"
+                          style="-fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

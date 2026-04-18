@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="it.uniroma2.dicii.ispw.supportdesk.boundary.javafx.LoginControllerGrafico"
+           style="-fx-background-color: #1A237E;">
+
+    <VBox alignment="CENTER" spacing="0" maxWidth="420">
+
+        <!-- ── CARD ─────────────────────────────────────────── -->
+        <VBox spacing="18"
+              style="-fx-background-color: white;
+                     -fx-background-radius: 12;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0, 0, 6);">
+            <padding>
+                <Insets top="40" bottom="40" left="40" right="40"/>
+            </padding>
+
+            <!-- Logo / Titolo -->
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="SupportDesk"
+                       style="-fx-font-size: 30px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #1A237E;"/>
+                <Label text="Sistema di gestione IT Support"
+                       style="-fx-font-size: 13px;
+                              -fx-text-fill: #757575;"/>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Email -->
+            <VBox spacing="5">
+                <Label text="Email"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #424242;"/>
+                <TextField fx:id="emailField"
+                           promptText="es. mario.rossi@azienda.it"
+                           style="-fx-font-size: 14px;
+                                  -fx-padding: 10;
+                                  -fx-background-radius: 6;
+                                  -fx-border-color: #BDBDBD;
+                                  -fx-border-radius: 6;"/>
+            </VBox>
+
+            <!-- Password -->
+            <VBox spacing="5">
+                <Label text="Password"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #424242;"/>
+                <PasswordField fx:id="passwordField"
+                               promptText="••••••••"
+                               style="-fx-font-size: 14px;
+                                      -fx-padding: 10;
+                                      -fx-background-radius: 6;
+                                      -fx-border-color: #BDBDBD;
+                                      -fx-border-radius: 6;"/>
+            </VBox>
+
+            <!-- Messaggio di errore -->
+            <Label fx:id="errorLabel"
+                   text=""
+                   wrapText="true"
+                   style="-fx-text-fill: #C62828;
+                          -fx-font-size: 12px;"/>
+
+            <!-- Bottone Accedi -->
+            <Button text="Accedi"
+                    onAction="#onLogin"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #1565C0;
+                           -fx-text-fill: white;
+                           -fx-font-size: 15px;
+                           -fx-font-weight: bold;
+                           -fx-padding: 12;
+                           -fx-background-radius: 6;
+                           -fx-cursor: hand;"/>
+
+        </VBox>
+
+    </VBox>
+
+</StackPane>

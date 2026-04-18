@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="it.uniroma2.dicii.ispw.supportdesk.boundary.javafx.UserDashboardControllerGrafico"
+            style="-fx-background-color: #ECEFF1;">
+
+    <!-- ── HEADER ──────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #1A237E; -fx-padding: 14 20;">
+            <Label text="SupportDesk"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label text="/ Utente"
+                   style="-fx-text-fill: #90CAF9; -fx-font-size: 14px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel"
+                   style="-fx-text-fill: #E3F2FD; -fx-font-size: 13px;"/>
+            <Button text="Logout"
+                    onAction="#onLogout"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #90CAF9;
+                           -fx-border-color: #90CAF9;
+                           -fx-border-radius: 4;
+                           -fx-cursor: hand;
+                           -fx-padding: 5 12;"/>
+        </HBox>
+    </top>
+
+    <!-- ── CONTENUTO ───────────────────────────────────────────── -->
+    <center>
+        <HBox spacing="16">
+            <padding><Insets top="16" bottom="16" left="16" right="16"/></padding>
+
+            <!-- PANNELLO SINISTRO: Apri Ticket -->
+            <VBox spacing="14" prefWidth="320"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 8;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
+                <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                <Label text="Apri Nuovo Ticket"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
+                <Separator/>
+
+                <Label text="Titolo *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <TextField fx:id="titleField" promptText="Descrivi brevemente il problema"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+
+                <Label text="Descrizione *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <TextArea fx:id="descriptionArea" promptText="Fornisci i dettagli del problema..."
+                          prefRowCount="4" wrapText="true"
+                          style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+
+                <Label text="Categoria *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <ComboBox fx:id="categoryBox" maxWidth="Infinity" promptText="Seleziona categoria"/>
+
+                <Label text="Priorità *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <ComboBox fx:id="priorityBox" maxWidth="Infinity" promptText="Seleziona priorità"/>
+
+                <Label fx:id="formErrorLabel" text="" wrapText="true"
+                       style="-fx-text-fill: #C62828; -fx-font-size: 11px;"/>
+
+                <Button text="Invia Ticket"
+                        onAction="#onSubmitTicket"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #1565C0;
+                               -fx-text-fill: white;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10;
+                               -fx-background-radius: 4;
+                               -fx-cursor: hand;"/>
+            </VBox>
+
+            <!-- PANNELLO DESTRO: I miei ticket -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 8;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
+                <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="I miei Ticket"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Aggiorna" onAction="#onRefresh"
+                            style="-fx-background-color: #E3F2FD; -fx-text-fill: #1565C0;
+                                   -fx-border-color: #90CAF9; -fx-border-radius: 4; -fx-cursor: hand; -fx-padding: 5 10;"/>
+                </HBox>
+                <Separator/>
+
+                <TableView fx:id="ticketTable" VBox.vgrow="ALWAYS" placeholder="&lt;Label text='Nessun ticket trovato'/&gt;">
+                    <columns>
+                        <TableColumn fx:id="colId"       text="ID"        prefWidth="50"/>
+                        <TableColumn fx:id="colTitle"    text="Titolo"    prefWidth="200"/>
+                        <TableColumn fx:id="colCategory" text="Categoria" prefWidth="110"/>
+                        <TableColumn fx:id="colPriority" text="Priorità"  prefWidth="90"/>
+                        <TableColumn fx:id="colStatus"   text="Stato"     prefWidth="110"/>
+                        <TableColumn fx:id="colSla"      text="Scadenza SLA" prefWidth="140"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>
