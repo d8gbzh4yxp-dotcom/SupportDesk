@@ -17,7 +17,6 @@ package it.uniroma2.dicii.ispw.supportdesk.boundary.javafx;
 import it.uniroma2.dicii.ispw.supportdesk.controller.applicativo.CorrelationController;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.SupportDeskException;
-import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.fx.SceneNavigator;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.facade.SlaFacade;
@@ -36,6 +35,11 @@ import java.util.List;
 public class ManagerDashboardControllerGrafico {
 
     private static final Logger log = LoggerFactory.getLogger(ManagerDashboardControllerGrafico.class);
+    private static final String COL_TITLE = "title";
+    private static final String COL_STATUS = "status";
+    private static final String COL_SCADENZA_SLA = "scadenzaSla";
+    private static final String ERR_TITLE = "Errore";
+
     private final CorrelationController correlationController = new CorrelationController();
 
     @FXML private Label welcomeLabel;
@@ -87,7 +91,7 @@ public class ManagerDashboardControllerGrafico {
             slaTable.setItems(FXCollections.observableArrayList(expiring));
         } catch (DAOException e) {
             log.error("Errore verifica SLA", e);
-            showError("Errore", "Errore interno del sistema.");
+            showError(ERR_TITLE, "Errore interno del sistema.");
         }
     }
 
@@ -116,7 +120,7 @@ public class ManagerDashboardControllerGrafico {
             correlatedTable.setItems(FXCollections.observableArrayList(correlated));
         } catch (DAOException e) {
             log.error("Errore correlazione ticket", e);
-            showError("Errore", "Errore interno del sistema.");
+            showError(ERR_TITLE, "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             correlationErrorLabel.setText(e.getMessage());
         }
@@ -135,34 +139,34 @@ public class ManagerDashboardControllerGrafico {
                     ViewTicketsFacade.getInstance().getAllTickets()));
         } catch (DAOException e) {
             log.error("Errore caricamento tutti i ticket", e);
-            showError("Errore", "Impossibile caricare i ticket.");
+            showError(ERR_TITLE, "Impossibile caricare i ticket.");
         }
     }
 
     private void bindAllTicketsTable() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
         colTech.setCellValueFactory(new PropertyValueFactory<>("assignedTechnicianName"));
-        colSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+        colSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
     }
 
     private void bindSlaTable() {
         slaColId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        slaColTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        slaColTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
         slaColPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
-        slaColStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        slaColSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+        slaColStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
+        slaColSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
     }
 
     private void bindCorrelatedTable() {
         corrColId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        corrColTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        corrColTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
         corrColCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        corrColStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        corrColSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+        corrColStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
+        corrColSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
     }
 
     private void showError(String title, String msg) {

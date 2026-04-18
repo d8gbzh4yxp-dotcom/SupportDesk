@@ -47,8 +47,8 @@ public class LoginControllerGrafico {
         bean.setPassword(passwordField.getText());
 
         try {
-            LoginRecord record = LoginFacade.getInstance().login(bean);
-            navigateToDashboard(record);
+            LoginRecord loginRecord = LoginFacade.getInstance().login(bean);
+            navigateToDashboard(loginRecord);
         } catch (DAOException e) {
             log.error("Errore DAO durante il login", e);
             showError("Errore", "Errore interno del sistema. Riprovare.");
@@ -60,11 +60,11 @@ public class LoginControllerGrafico {
         }
     }
 
-    private void navigateToDashboard(LoginRecord record) throws IOException {
-        SessionContext.setCurrentUser(record);
-        if (record.role() == Role.USER) {
+    private void navigateToDashboard(LoginRecord loginRecord) throws IOException {
+        SessionContext.setCurrentUser(loginRecord);
+        if (loginRecord.role() == Role.USER) {
             SceneNavigator.navigateTo("user-dashboard.fxml", "Dashboard Utente");
-        } else if (record.role() == Role.TECHNICIAN) {
+        } else if (loginRecord.role() == Role.TECHNICIAN) {
             SceneNavigator.navigateTo("tech-dashboard.fxml", "Dashboard Tecnico");
         } else {
             SceneNavigator.navigateTo("manager-dashboard.fxml", "Dashboard Manager");
