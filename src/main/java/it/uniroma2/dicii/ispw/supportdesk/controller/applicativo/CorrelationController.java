@@ -20,14 +20,11 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.CorrelationEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class CorrelationController {
 
-    private static final Logger log = LoggerFactory.getLogger(CorrelationController.class);
 
     public List<TicketRecord> analyzeCorrelations(Ticket target)
             throws CorrelationEngineException, DAOException {
@@ -38,7 +35,6 @@ public class CorrelationController {
         try {
             List<Ticket> correlated = CorrelationEngine.getInstance()
                     .findCorrelatedTickets(target, candidates);
-            log.debug("Trovati {} ticket correlati per ticket {}", correlated.size(), target.getId());
             return correlated.stream().map(TicketController::toRecord).toList();
         } catch (Exception e) {
             throw new CorrelationEngineException(

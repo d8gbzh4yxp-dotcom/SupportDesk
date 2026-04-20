@@ -19,16 +19,12 @@ import it.uniroma2.dicii.ispw.supportdesk.dao.UserDAO;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.Role;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAODB implements UserDAO {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserDAODB.class);
 
     private static final String USER_COLS =
         "id, name, surname, email, credential_hash, role, specialization";
@@ -78,7 +74,6 @@ public class UserDAODB implements UserDAO {
             ps.setString(5, user.obtainRole().name());
             ps.setString(6, user.obtainSpecialization());
             ps.executeUpdate();
-            if (LOG.isDebugEnabled()) LOG.debug("Utente inserito: {}", user.obtainEmail());
         } catch (SQLException e) {
             throw new DAOException("Errore insert user", e);
         }

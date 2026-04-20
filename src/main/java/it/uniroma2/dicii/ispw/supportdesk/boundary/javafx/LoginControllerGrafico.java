@@ -26,14 +26,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class LoginControllerGrafico {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginControllerGrafico.class);
 
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
@@ -50,12 +47,12 @@ public class LoginControllerGrafico {
             LoginRecord loginRecord = LoginFacade.getInstance().login(bean);
             navigateToDashboard(loginRecord);
         } catch (DAOException e) {
-            log.error("Errore DAO durante il login", e);
+            e.printStackTrace();
             showError("Errore", "Errore interno del sistema. Riprovare.");
         } catch (SupportDeskException e) {
             errorLabel.setText(e.getMessage());
         } catch (IOException e) {
-            log.error("Errore navigazione post-login", e);
+            e.printStackTrace();
             showError("Errore", "Impossibile aprire la dashboard.");
         }
     }

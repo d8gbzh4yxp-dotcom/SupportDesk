@@ -18,15 +18,11 @@ import it.uniroma2.dicii.ispw.supportdesk.dao.UserDAO;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.Role;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOFile implements UserDAO {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserDAOFile.class);
     private static final String SEP = "|";
     private static final String NULL_TOKEN = "null";
     private static final int FIELDS = 7;
@@ -53,8 +49,7 @@ public class UserDAOFile implements UserDAO {
     public void insert(User user) throws DAOException {
         int nextId = computeNextId();
         CsvFileStore.appendLine(DATA_FILE, buildLine(nextId, user));
-        if (LOG.isDebugEnabled()) LOG.debug("Utente inserito: {}", user.obtainEmail());
-    }
+        }
 
     private List<User> readAll() throws DAOException {
         List<User> list = new ArrayList<>();

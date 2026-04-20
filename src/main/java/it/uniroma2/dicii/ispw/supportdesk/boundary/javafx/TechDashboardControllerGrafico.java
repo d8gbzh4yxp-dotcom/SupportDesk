@@ -28,15 +28,12 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class TechDashboardControllerGrafico {
 
-    private static final Logger log = LoggerFactory.getLogger(TechDashboardControllerGrafico.class);
 
     private final KnowledgeBaseController kbController = new KnowledgeBaseController();
 
@@ -142,7 +139,7 @@ public class TechDashboardControllerGrafico {
                     .getTicketsByUser(SessionContext.getCurrentUser().email());
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
-            log.error("Errore caricamento ticket tecnico", e);
+            e.printStackTrace();
             showError("Errore", "Impossibile caricare i ticket assegnati.");
         }
     }
@@ -153,7 +150,7 @@ public class TechDashboardControllerGrafico {
             ViewTicketsFacade.getInstance().changeStatus(ticketId, newStatus);
             loadAssignedTickets();
         } catch (DAOException e) {
-            log.error("Errore cambio stato ticket {}", ticketId, e);
+            e.printStackTrace();
             showError("Errore", "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             actionErrorLabel.setText(e.getMessage());

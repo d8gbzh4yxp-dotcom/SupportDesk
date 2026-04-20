@@ -15,25 +15,19 @@
 package it.uniroma2.dicii.ispw.supportdesk.utility.observer;
 
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ManagerNotificationObserver implements TicketObserver {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagerNotificationObserver.class);
 
     @Override
     public void onTicketEvent(EventType eventType, Ticket ticket) {
         switch (eventType) {
             case TICKET_CAMBIO_STATO ->
-                    log.info("[NOTIFICA MANAGER] Ticket #{} cambiato stato → {}",
-                            ticket.getId(), ticket.getStatus());
+                    System.out.println("[NOTIFICA MANAGER] Ticket #" + ticket.getId() + " cambiato stato → " + ticket.getStatus());
             case SLA_VIOLATO ->
-                    log.warn("[NOTIFICA MANAGER] SLA VIOLATO — Ticket #{} «{}»",
-                            ticket.getId(), ticket.getTitle());
+                    System.out.println("[NOTIFICA MANAGER] SLA VIOLATO — Ticket #" + ticket.getId() + " " + ticket.getTitle());
             case SLA_IN_SCADENZA ->
-                    log.warn("[NOTIFICA MANAGER] SLA IN SCADENZA — Ticket #{} «{}»",
-                            ticket.getId(), ticket.getTitle());
+                    System.out.println("[NOTIFICA MANAGER] SLA IN SCADENZA — Ticket #" + ticket.getId() + " " + ticket.getTitle());
             default -> { /* altri eventi non di competenza del manager */ }
         }
     }

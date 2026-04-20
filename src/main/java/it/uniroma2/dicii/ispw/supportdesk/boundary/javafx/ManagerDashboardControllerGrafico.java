@@ -26,15 +26,12 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class ManagerDashboardControllerGrafico {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagerDashboardControllerGrafico.class);
     private static final String COL_TITLE = "title";
     private static final String COL_STATUS = "status";
     private static final String COL_SCADENZA_SLA = "scadenzaSla";
@@ -110,7 +107,7 @@ public class ManagerDashboardControllerGrafico {
             List<TicketRecord> expiring = SlaFacade.getInstance().getTicketsWithSlaExpiringSoon();
             slaTable.setItems(FXCollections.observableArrayList(expiring));
         } catch (DAOException e) {
-            log.error("Errore verifica SLA", e);
+            e.printStackTrace();
             showError(ERR_TITLE, "Errore interno del sistema.");
         }
     }
@@ -139,7 +136,7 @@ public class ManagerDashboardControllerGrafico {
                             target.category(), target.priority()));
             correlatedTable.setItems(FXCollections.observableArrayList(correlated));
         } catch (DAOException e) {
-            log.error("Errore correlazione ticket", e);
+            e.printStackTrace();
             showError(ERR_TITLE, "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             correlationErrorLabel.setText(e.getMessage());
@@ -158,7 +155,7 @@ public class ManagerDashboardControllerGrafico {
             allTicketsTable.setItems(FXCollections.observableArrayList(
                     ViewTicketsFacade.getInstance().getAllTickets()));
         } catch (DAOException e) {
-            log.error("Errore caricamento tutti i ticket", e);
+            e.printStackTrace();
             showError(ERR_TITLE, "Impossibile caricare i ticket.");
         }
     }

@@ -21,16 +21,12 @@ import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAOFile implements TicketDAO {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TicketDAOFile.class);
     private static final String SEP = "|";
     private static final String NULL_TOKEN = "null";
     private static final int FIELDS = 9;
@@ -40,8 +36,7 @@ public class TicketDAOFile implements TicketDAO {
     public void insert(Ticket ticket) throws DAOException {
         int nextId = computeNextId();
         CsvFileStore.appendLine(DATA_FILE, buildLine(nextId, ticket));
-        if (LOG.isDebugEnabled()) LOG.debug("Ticket inserito id={}", nextId);
-    }
+        }
 
     @Override
     public Ticket findById(int id) throws DAOException, TicketNotFoundException {
@@ -95,8 +90,7 @@ public class TicketDAOFile implements TicketDAO {
             if (Integer.parseInt(line.split("\\|", 2)[0]) != id) filtered.add(line);
         }
         CsvFileStore.writeLines(DATA_FILE, filtered);
-        if (LOG.isDebugEnabled()) LOG.debug("Ticket eliminato id={}", id);
-    }
+        }
 
     private Ticket parseLine(String line) throws DAOException {
         String[] p = line.split("\\|", FIELDS);

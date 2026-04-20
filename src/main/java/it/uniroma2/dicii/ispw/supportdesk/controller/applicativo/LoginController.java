@@ -24,8 +24,6 @@ import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.LoginRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.ApplicationModeManager;
 import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.UserSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -33,7 +31,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginController {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
     private static final String DEMO_CREDENTIAL_HASH = "DEMO_HASH_PLACEHOLDER";
     private static final String SHA_256 = "SHA-256";
 
@@ -49,7 +46,7 @@ public class LoginController {
         String inputHash = sha256(bean.getPassword());
         verifyPassword(inputHash, user);
         UserSession.getInstance().login(user);
-        log.info("Autenticazione riuscita per {}", bean.getEmail());
+        System.out.println("Autenticazione riuscita per " + bean.getEmail());
         return toRecord(user);
     }
 

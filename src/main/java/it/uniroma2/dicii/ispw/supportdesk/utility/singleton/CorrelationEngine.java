@@ -15,15 +15,12 @@
 package it.uniroma2.dicii.ispw.supportdesk.utility.singleton;
 
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 @SuppressWarnings("java:S6548")
 public final class CorrelationEngine {
 
-    private static final Logger log = LoggerFactory.getLogger(CorrelationEngine.class);
     private static final double DEFAULT_THRESHOLD = 0.30;
 
     private CorrelationEngine() {}
@@ -87,7 +84,6 @@ public final class CorrelationEngine {
         for (int i = 0; i < candidates.size(); i++) {
             double sim = cosine(targetVec, vecs.get(i + 1));
             if (sim >= DEFAULT_THRESHOLD) {
-                log.debug("Ticket {} correlato con similarita {}", candidates.get(i).getId(), sim);
                 correlated.add(candidates.get(i));
             }
         }

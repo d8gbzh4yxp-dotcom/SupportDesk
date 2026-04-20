@@ -24,15 +24,12 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class UserDashboardControllerGrafico {
 
-    private static final Logger log = LoggerFactory.getLogger(UserDashboardControllerGrafico.class);
 
     @FXML private Label     welcomeLabel;
 
@@ -99,7 +96,7 @@ public class UserDashboardControllerGrafico {
                     .getTicketsByUser(SessionContext.getCurrentUser().email());
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
-            log.error("Errore caricamento ticket", e);
+            e.printStackTrace();
             showError("Errore", "Impossibile caricare i ticket.");
         }
     }

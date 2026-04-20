@@ -25,8 +25,6 @@ import it.uniroma2.dicii.ispw.supportdesk.utility.facade.SubmitTicketFacade;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -36,7 +34,6 @@ import java.io.IOException;
  */
 public class OpenTicketControllerGrafico {
 
-    private static final Logger log = LoggerFactory.getLogger(OpenTicketControllerGrafico.class);
 
     @FXML private TextField           titleField;
     @FXML private TextArea            descriptionArea;
@@ -86,7 +83,7 @@ public class OpenTicketControllerGrafico {
             TicketRecord result = ticketFacade.submitTicket(bean);
             showConfirmation(result.id());
         } catch (DAOException e) {
-            log.error("Errore DAO apertura ticket", e);
+            e.printStackTrace();
             showError("Errore interno del sistema. Riprovare.");
         } catch (SupportDeskException e) {
             showError(e.getMessage());
@@ -102,7 +99,7 @@ public class OpenTicketControllerGrafico {
         try {
             SceneNavigator.navigateTo("user-dashboard.fxml", "Dashboard Utente");
         } catch (IOException e) {
-            log.error("Errore navigazione verso dashboard", e);
+            e.printStackTrace();
         }
     }
 

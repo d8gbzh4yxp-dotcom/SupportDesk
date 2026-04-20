@@ -17,8 +17,6 @@ package it.uniroma2.dicii.ispw.supportdesk.controller.applicativo;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.Role;
 import it.uniroma2.dicii.ispw.supportdesk.model.Notification;
 import it.uniroma2.dicii.ispw.supportdesk.record.NotificationRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class NotificationController {
 
-    private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
 
     private final List<Notification> notifications = new CopyOnWriteArrayList<>();
     private final AtomicInteger idGen = new AtomicInteger(1);
@@ -34,7 +31,7 @@ public class NotificationController {
     public NotificationRecord createNotification(String message, Role targetRole, int ticketId) {
         Notification n = new Notification(idGen.getAndIncrement(), message, targetRole, ticketId);
         notifications.add(n);
-        log.info("Notifica creata per role {} — ticket {}", targetRole, ticketId);
+        System.out.println("Notifica creata per ticket " + ticketId);
         return toRecord(n);
     }
 
@@ -50,7 +47,6 @@ public class NotificationController {
                 .filter(n -> n.getId() == notificationId)
                 .findFirst()
                 .ifPresent(Notification::markAsRead);
-        log.debug("Notifica {} segnata come letta", notificationId);
     }
 
     private NotificationRecord toRecord(Notification n) {

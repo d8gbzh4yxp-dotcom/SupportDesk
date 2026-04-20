@@ -20,7 +20,6 @@ import java.util.Set;
  * Stati possibili di un ticket e relative transizioni valide.
  * La state machine è incapsulata qui: nessun altro componente
  * deve replicare la logica di transizione.
- *
  * Transizioni valide:
  *   OPEN → ASSIGNED
  *   ASSIGNED → IN_PROGRESS

@@ -20,8 +20,6 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.KnowledgeBaseException;
 import it.uniroma2.dicii.ispw.supportdesk.model.KnowledgeEntry;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.KnowledgeEntryRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class KnowledgeBaseController {
 
-    private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseController.class);
 
     private final List<KnowledgeEntry> entries = new CopyOnWriteArrayList<>();
     private final AtomicInteger idGen = new AtomicInteger(1);
@@ -46,7 +43,7 @@ public class KnowledgeBaseController {
         }
         KnowledgeEntry entry = new KnowledgeEntry(idGen.getAndIncrement(), title, content, author);
         entries.add(entry);
-        log.info("Knowledge entry '{}' aggiunta da {}", title, authorEmail);
+        System.out.println("Voce knowledge base aggiunta: " + title);
         return toRecord(entry);
     }
 

@@ -26,17 +26,15 @@ import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.EventType;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TicketObserver;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TicketSubject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+
 
 public class TicketController implements TicketSubject {
 
-    private static final Logger log = LoggerFactory.getLogger(TicketController.class);
 
-    private final List<TicketObserver> observers = new CopyOnWriteArrayList<>();
+    private final List<TicketObserver> observers = new ArrayList<>();
 
     @Override
     public void addObserver(TicketObserver observer) {
@@ -66,8 +64,12 @@ public class TicketController implements TicketSubject {
                 bean.getCategory(), bean.getPriority());
         notifyObservers(EventType.TICKET_OPEN, ticket);
         PersistenceLayer.getInstance().insertTicket(ticket);
-        launchCorrelationAnalysis(ticket);
-        log.info("Ticket {} aperto da {}", ticket.getId(), authorEmail);
+        try {
+            new CorrelationController().analyzeCorrelations(ticket);
+        } catch (Exception e) {
+            System.out.println("Correlazione non disponibile per ticket " + ticket.getId());
+        }
+        System.out.println("Ticket " + ticket.getId() + " aperto da " + authorEmail);
         return toRecord(ticket);
     }
 
@@ -91,20 +93,8 @@ public class TicketController implements TicketSubject {
         ticket.cambiaStato(newStatus);
         PersistenceLayer.getInstance().updateTicket(ticket);
         notifyObservers(EventType.TICKET_CAMBIO_STATO, ticket);
-        log.info("Ticket {} passato a stato {}", id, newStatus);
+        System.out.println("Ticket " + id + " passato a stato " + newStatus);
         return toRecord(ticket);
-    }
-
-    private void launchCorrelationAnalysis(Ticket ticket) {
-        Thread t = new Thread(() -> {
-            try {
-                new CorrelationController().analyzeCorrelations(ticket);
-            } catch (Exception e) {
-                log.warn("Correlazione fallita per ticket {}: {}", ticket.getId(), e.getMessage());
-            }
-        });
-        t.setDaemon(true);
-        t.start();
     }
 
     static TicketRecord toRecord(Ticket t) {

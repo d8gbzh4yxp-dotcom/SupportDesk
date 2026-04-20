@@ -22,8 +22,6 @@ import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -31,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAODB implements TicketDAO {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TicketDAODB.class);
 
     private static final String SQL_INSERT =
         "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla) VALUES (?,?,?,?,?,?,?)";
@@ -59,7 +55,6 @@ public class TicketDAODB implements TicketDAO {
             ps.setTimestamp(6, Timestamp.valueOf(ticket.getDataApertura()));
             ps.setTimestamp(7, Timestamp.valueOf(ticket.getScadenzaSla()));
             ps.executeUpdate();
-            if (LOG.isDebugEnabled()) LOG.debug("Ticket inserito: {}", ticket.getTitle());
         } catch (SQLException e) {
             throw new DAOException("Errore insert ticket", e);
         }
@@ -129,7 +124,6 @@ public class TicketDAODB implements TicketDAO {
              PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
             ps.setInt(1, id);
             ps.executeUpdate();
-            if (LOG.isDebugEnabled()) LOG.debug("Ticket eliminato id={}", id);
         } catch (SQLException e) {
             throw new DAOException("Errore delete ticket", e);
         }

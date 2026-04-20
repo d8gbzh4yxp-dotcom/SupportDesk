@@ -15,8 +15,6 @@
 package it.uniroma2.dicii.ispw.supportdesk.dao;
 
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +25,6 @@ import java.util.Properties;
 
 @SuppressWarnings("java:S6548")
 public final class ConnectionManager {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ConnectionManager.class);
     private static final String DB_PROPS_FILE = "db.properties";
     private static final String KEY_URL  = "db.url";
     private static final String KEY_USER = "db.user";
@@ -41,7 +37,6 @@ public final class ConnectionManager {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(DB_PROPS_FILE)) {
             if (in != null) props.load(in);
         } catch (IOException e) {
-            LOG.warn("db.properties non trovato, uso system properties");
         }
     }
 
@@ -60,7 +55,6 @@ public final class ConnectionManager {
         try {
             return DriverManager.getConnection(url, user, cred);
         } catch (SQLException e) {
-            LOG.error("Connessione DB fallita: {}", e.getMessage());
             throw new DAOException("Impossibile connettersi al database", e);
         }
     }

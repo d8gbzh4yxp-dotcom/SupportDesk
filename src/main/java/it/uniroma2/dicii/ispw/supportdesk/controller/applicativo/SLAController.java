@@ -22,22 +22,19 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.EventType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class SLAController {
 
-    private static final Logger log = LoggerFactory.getLogger(SLAController.class);
     private static final long SLA_WARNING_HOURS = 2;
 
     public boolean isSlaViolated(int ticketId) throws DAOException, TicketNotFoundException {
         Ticket ticket = PersistenceLayer.getInstance().findTicketById(ticketId);
         boolean violated = LocalDateTime.now().isAfter(ticket.getScadenzaSla());
         if (violated) {
-            log.warn("SLA violato per ticket {}", ticketId);
+            System.out.println("[AVVISO] SLA violato per ticket " + ticketId);
         }
         return violated;
     }

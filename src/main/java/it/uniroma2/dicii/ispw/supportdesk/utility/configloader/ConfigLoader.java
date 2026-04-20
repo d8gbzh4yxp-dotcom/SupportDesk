@@ -14,8 +14,6 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.utility.configloader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +22,6 @@ import java.util.Properties;
 @SuppressWarnings("java:S6548")
 public final class ConfigLoader {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigLoader.class);
     private static final String DB_PROPERTIES = "db.properties";
 
     private final Properties properties = new Properties();
@@ -46,10 +43,8 @@ public final class ConfigLoader {
             if (in != null) {
                 properties.load(in);
             } else {
-                log.warn("File {} non trovato nel classpath — uso valori di default", DB_PROPERTIES);
             }
         } catch (IOException e) {
-            log.error("Errore caricamento {}", DB_PROPERTIES, e);
         }
     }
 
