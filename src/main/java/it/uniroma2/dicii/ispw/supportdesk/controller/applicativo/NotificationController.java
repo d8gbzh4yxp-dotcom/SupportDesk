@@ -18,11 +18,16 @@ import it.uniroma2.dicii.ispw.supportdesk.enumerator.Role;
 import it.uniroma2.dicii.ispw.supportdesk.model.Notification;
 import it.uniroma2.dicii.ispw.supportdesk.record.NotificationRecord;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NotificationController {
+
+    private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
 
 
     private final List<Notification> notifications = new CopyOnWriteArrayList<>();
@@ -31,7 +36,7 @@ public class NotificationController {
     public NotificationRecord createNotification(String message, Role targetRole, int ticketId) {
         Notification n = new Notification(idGen.getAndIncrement(), message, targetRole, ticketId);
         notifications.add(n);
-        System.out.println("Notifica creata per ticket " + ticketId);
+        log.info("Notifica creata per ticket {}", ticketId);
         return toRecord(n);
     }
 

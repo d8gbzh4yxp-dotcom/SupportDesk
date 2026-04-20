@@ -30,7 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class ManagerDashboardControllerGrafico {
+public class ManagerDashboardControllerGrafico extends AbstractDashboardControllerGrafico {
 
     private static final String COL_TITLE = "title";
     private static final String COL_STATUS = "status";
@@ -69,18 +69,6 @@ public class ManagerDashboardControllerGrafico {
     @FXML private TableColumn<TicketRecord, String>  corrColStatus;
     @FXML private TableColumn<TicketRecord, String>  corrColSla;
 
-    // Detail panel condiviso
-    @FXML private javafx.scene.layout.VBox  detailPanel;
-    @FXML private Label detailId;
-    @FXML private Label detailTitle;
-    @FXML private Label detailDescription;
-    @FXML private Label detailCategory;
-    @FXML private Label detailPriority;
-    @FXML private Label detailStatus;
-    @FXML private Label detailDataApertura;
-    @FXML private Label detailSla;
-    @FXML private Label detailTechnician;
-
     @FXML
     public void initialize() {
         welcomeLabel.setText("Benvenuto, " + SessionContext.getCurrentUser().name());
@@ -107,7 +95,7 @@ public class ManagerDashboardControllerGrafico {
             List<TicketRecord> expiring = SlaFacade.getInstance().getTicketsWithSlaExpiringSoon();
             slaTable.setItems(FXCollections.observableArrayList(expiring));
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore controllo SLA", e);
             showError(ERR_TITLE, "Errore interno del sistema.");
         }
     }
@@ -136,7 +124,7 @@ public class ManagerDashboardControllerGrafico {
                             target.category(), target.priority()));
             correlatedTable.setItems(FXCollections.observableArrayList(correlated));
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore ricerca ticket correlati", e);
             showError(ERR_TITLE, "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             correlationErrorLabel.setText(e.getMessage());
@@ -155,7 +143,7 @@ public class ManagerDashboardControllerGrafico {
             allTicketsTable.setItems(FXCollections.observableArrayList(
                     ViewTicketsFacade.getInstance().getAllTickets()));
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore caricamento tutti i ticket", e);
             showError(ERR_TITLE, "Impossibile caricare i ticket.");
         }
     }
@@ -192,32 +180,5 @@ public class ManagerDashboardControllerGrafico {
         allTicketsTable.getSelectionModel().clearSelection();
         slaTable.getSelectionModel().clearSelection();
         correlatedTable.getSelectionModel().clearSelection();
-    }
-
-    private void populateDetail(TicketRecord t) {
-        detailId.setText(String.valueOf(t.id()));
-        detailTitle.setText(t.title());
-        detailDescription.setText(t.description());
-        detailCategory.setText(t.getCategory());
-        detailPriority.setText(t.getPriority());
-        detailStatus.setText(t.getStatus());
-        detailDataApertura.setText(t.getDataApertura());
-        detailSla.setText(t.getScadenzaSla());
-        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
-                ? "Non assegnato" : t.getAssignedTechnicianName());
-        detailPanel.setVisible(true);
-        detailPanel.setManaged(true);
-    }
-
-    private void hideDetail() {
-        detailPanel.setVisible(false);
-        detailPanel.setManaged(false);
-    }
-
-    private void showError(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 }

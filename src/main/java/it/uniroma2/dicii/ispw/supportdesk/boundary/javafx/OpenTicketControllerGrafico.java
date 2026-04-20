@@ -26,6 +26,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 /**
@@ -40,6 +43,8 @@ public class OpenTicketControllerGrafico {
     @FXML private ComboBox<Category>  categoryBox;
     @FXML private ComboBox<Priority>  priorityBox;
     @FXML private Label               errorLabel;
+
+    private static final Logger log = LoggerFactory.getLogger(OpenTicketControllerGrafico.class);
 
     private SubmitTicketFacade ticketFacade;
 
@@ -83,7 +88,7 @@ public class OpenTicketControllerGrafico {
             TicketRecord result = ticketFacade.submitTicket(bean);
             showConfirmation(result.id());
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore DAO apertura ticket", e);
             showError("Errore interno del sistema. Riprovare.");
         } catch (SupportDeskException e) {
             showError(e.getMessage());
@@ -99,7 +104,7 @@ public class OpenTicketControllerGrafico {
         try {
             SceneNavigator.navigateTo("user-dashboard.fxml", "Dashboard Utente");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Errore navigazione dopo conferma ticket", e);
         }
     }
 

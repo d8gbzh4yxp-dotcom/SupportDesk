@@ -20,11 +20,16 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Comment;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommentController {
+
+    private static final Logger log = LoggerFactory.getLogger(CommentController.class);
 
 
     private final List<Comment> comments = new CopyOnWriteArrayList<>();
@@ -41,7 +46,7 @@ public class CommentController {
         }
         Comment comment = new Comment(idGen.getAndIncrement(), ticketId, author, text);
         comments.add(comment);
-        System.out.println("Commento aggiunto al ticket " + ticketId + " da " + authorEmail);
+        log.info("Commento aggiunto al ticket {} da {}", ticketId, authorEmail);
     }
 
     public List<Comment> getCommentsForTicket(int ticketId) {

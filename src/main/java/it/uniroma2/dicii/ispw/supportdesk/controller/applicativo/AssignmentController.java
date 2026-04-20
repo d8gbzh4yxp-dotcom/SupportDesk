@@ -29,11 +29,16 @@ import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.DefaultH
 import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.ExpertiseHandler;
 import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.WorkloadHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AssignmentController {
+
+    private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
 
     public TicketRecord assignTechnician(int ticketId)
@@ -47,7 +52,7 @@ public class AssignmentController {
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
-        System.out.println("Ticket " + ticketId + " assegnato a " + technician.obtainEmail());
+        log.info("Ticket {} assegnato a {}", ticketId, technician.obtainEmail());
         return TicketController.toRecord(ticket);
     }
 

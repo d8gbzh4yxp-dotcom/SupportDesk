@@ -15,16 +15,21 @@
 package it.uniroma2.dicii.ispw.supportdesk.utility.observer;
 
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TechnicianNotificationObserver implements TicketObserver {
+
+    private static final Logger log = LoggerFactory.getLogger(TechnicianNotificationObserver.class);
 
 
     @Override
     public void onTicketEvent(EventType eventType, Ticket ticket) {
         if (eventType == EventType.TICKET_OPEN) {
-System.out.println("[NOTIFICA TECNICO] Nuovo ticket #" + ticket.getId() + " — " + ticket.getTitle()
-                    + " — assegnato a: " + (ticket.getAssignedTechnician() != null
-                            ? ticket.getAssignedTechnician().obtainName() : "nessuno"));
+            log.info("[NOTIFICA TECNICO] Nuovo ticket #{} — {} — assegnato a: {}",
+                    ticket.getId(), ticket.getTitle(),
+                    ticket.getAssignedTechnician() != null
+                            ? ticket.getAssignedTechnician().obtainName() : "nessuno");
         }
     }
 }

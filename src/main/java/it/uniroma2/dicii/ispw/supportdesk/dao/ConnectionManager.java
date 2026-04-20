@@ -15,6 +15,8 @@
 package it.uniroma2.dicii.ispw.supportdesk.dao;
 
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +32,8 @@ public final class ConnectionManager {
     private static final String KEY_USER = "db.user";
     private static final String KEY_CRED = "db.credential";
 
+    private static final Logger log = LoggerFactory.getLogger(ConnectionManager.class);
+
     private final Properties props;
 
     private ConnectionManager() {
@@ -37,6 +41,7 @@ public final class ConnectionManager {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(DB_PROPS_FILE)) {
             if (in != null) props.load(in);
         } catch (IOException e) {
+            log.error("Impossibile caricare {}", DB_PROPS_FILE, e);
         }
     }
 

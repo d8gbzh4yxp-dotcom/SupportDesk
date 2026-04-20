@@ -32,15 +32,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class TechDashboardControllerGrafico {
-
+public class TechDashboardControllerGrafico extends AbstractDashboardControllerGrafico {
 
     private final KnowledgeBaseController kbController = new KnowledgeBaseController();
 
     @FXML private Label welcomeLabel;
     @FXML private Label actionErrorLabel;
 
-    @FXML private TableView<TicketRecord>          ticketTable;
+    @FXML private TableView<TicketRecord>               ticketTable;
     @FXML private TableColumn<TicketRecord, Integer>    colId;
     @FXML private TableColumn<TicketRecord, String>     colTitle;
     @FXML private TableColumn<TicketRecord, String>     colCategory;
@@ -50,17 +49,6 @@ public class TechDashboardControllerGrafico {
 
     @FXML private TextField         kbSearchField;
     @FXML private ListView<String>  kbResultsList;
-
-    @FXML private javafx.scene.layout.VBox  detailPanel;
-    @FXML private Label detailId;
-    @FXML private Label detailTitle;
-    @FXML private Label detailDescription;
-    @FXML private Label detailCategory;
-    @FXML private Label detailPriority;
-    @FXML private Label detailStatus;
-    @FXML private Label detailDataApertura;
-    @FXML private Label detailSla;
-    @FXML private Label detailTechnician;
 
     @FXML
     public void initialize() {
@@ -139,7 +127,7 @@ public class TechDashboardControllerGrafico {
                     .getTicketsByUser(SessionContext.getCurrentUser().email());
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore caricamento ticket tecnico", e);
             showError("Errore", "Impossibile caricare i ticket assegnati.");
         }
     }
@@ -150,7 +138,7 @@ public class TechDashboardControllerGrafico {
             ViewTicketsFacade.getInstance().changeStatus(ticketId, newStatus);
             loadAssignedTickets();
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore cambio stato ticket {}", ticketId, e);
             showError("Errore", "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             actionErrorLabel.setText(e.getMessage());
@@ -161,32 +149,5 @@ public class TechDashboardControllerGrafico {
     public void onCloseDetail() {
         hideDetail();
         ticketTable.getSelectionModel().clearSelection();
-    }
-
-    private void populateDetail(TicketRecord t) {
-        detailId.setText(String.valueOf(t.id()));
-        detailTitle.setText(t.title());
-        detailDescription.setText(t.description());
-        detailCategory.setText(t.getCategory());
-        detailPriority.setText(t.getPriority());
-        detailStatus.setText(t.getStatus());
-        detailDataApertura.setText(t.getDataApertura());
-        detailSla.setText(t.getScadenzaSla());
-        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
-                ? "Non assegnato" : t.getAssignedTechnicianName());
-        detailPanel.setVisible(true);
-        detailPanel.setManaged(true);
-    }
-
-    private void hideDetail() {
-        detailPanel.setVisible(false);
-        detailPanel.setManaged(false);
-    }
-
-    private void showError(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 }

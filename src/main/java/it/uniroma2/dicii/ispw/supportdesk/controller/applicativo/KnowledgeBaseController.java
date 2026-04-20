@@ -21,12 +21,17 @@ import it.uniroma2.dicii.ispw.supportdesk.model.KnowledgeEntry;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.KnowledgeEntryRecord;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class KnowledgeBaseController {
+
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseController.class);
 
 
     private final List<KnowledgeEntry> entries = new CopyOnWriteArrayList<>();
@@ -43,7 +48,7 @@ public class KnowledgeBaseController {
         }
         KnowledgeEntry entry = new KnowledgeEntry(idGen.getAndIncrement(), title, content, author);
         entries.add(entry);
-        System.out.println("Voce knowledge base aggiunta: " + title);
+        log.info("Voce knowledge base aggiunta: {}", title);
         return toRecord(entry);
     }
 

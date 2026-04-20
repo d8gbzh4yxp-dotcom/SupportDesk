@@ -16,11 +16,15 @@ package it.uniroma2.dicii.ispw.supportdesk.utility.singleton;
 
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.ApplicationMode;
 import it.uniroma2.dicii.ispw.supportdesk.utility.configloader.ConfigLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("java:S6548")
 public final class ApplicationModeManager {
 
     private static final String MODE_KEY = "app.mode";
+
+    private static final Logger log = LoggerFactory.getLogger(ApplicationModeManager.class);
 
     private volatile ApplicationMode mode;
 
@@ -49,7 +53,7 @@ public final class ApplicationModeManager {
         try {
             return ApplicationMode.valueOf(raw.toUpperCase());
         } catch (IllegalArgumentException e) {
-            System.out.println("[AVVISO] Valore app.mode non riconosciuto: " + raw + " — uso DEMO");
+            log.warn("Valore app.mode non riconosciuto: {} — uso DEMO", raw);
             return ApplicationMode.DEMO;
         }
     }

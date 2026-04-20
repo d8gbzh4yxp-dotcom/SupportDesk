@@ -28,8 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class UserDashboardControllerGrafico {
-
+public class UserDashboardControllerGrafico extends AbstractDashboardControllerGrafico {
 
     @FXML private Label     welcomeLabel;
 
@@ -40,17 +39,6 @@ public class UserDashboardControllerGrafico {
     @FXML private TableColumn<TicketRecord, String>     colPriority;
     @FXML private TableColumn<TicketRecord, String>     colStatus;
     @FXML private TableColumn<TicketRecord, String>     colSla;
-
-    @FXML private javafx.scene.layout.VBox  detailPanel;
-    @FXML private Label detailId;
-    @FXML private Label detailTitle;
-    @FXML private Label detailDescription;
-    @FXML private Label detailCategory;
-    @FXML private Label detailPriority;
-    @FXML private Label detailStatus;
-    @FXML private Label detailDataApertura;
-    @FXML private Label detailSla;
-    @FXML private Label detailTechnician;
 
     @FXML
     public void initialize() {
@@ -96,7 +84,7 @@ public class UserDashboardControllerGrafico {
                     .getTicketsByUser(SessionContext.getCurrentUser().email());
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error("Errore caricamento ticket utente", e);
             showError("Errore", "Impossibile caricare i ticket.");
         }
     }
@@ -106,32 +94,4 @@ public class UserDashboardControllerGrafico {
         hideDetail();
         ticketTable.getSelectionModel().clearSelection();
     }
-
-    private void populateDetail(TicketRecord t) {
-        detailId.setText(String.valueOf(t.id()));
-        detailTitle.setText(t.title());
-        detailDescription.setText(t.description());
-        detailCategory.setText(t.getCategory());
-        detailPriority.setText(t.getPriority());
-        detailStatus.setText(t.getStatus());
-        detailDataApertura.setText(t.getDataApertura());
-        detailSla.setText(t.getScadenzaSla());
-        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
-                ? "Non assegnato" : t.getAssignedTechnicianName());
-        detailPanel.setVisible(true);
-        detailPanel.setManaged(true);
-    }
-
-    private void hideDetail() {
-        detailPanel.setVisible(false);
-        detailPanel.setManaged(false);
-    }
-
-    private void showError(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
 }
