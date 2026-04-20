@@ -83,8 +83,8 @@ public class OpenTicketControllerGrafico {
         bean.setPriority(priority);
 
         try {
-            TicketRecord record = ticketFacade.submitTicket(bean);
-            showConfirmation(record.id());
+            TicketRecord result = ticketFacade.submitTicket(bean);
+            showConfirmation(result.id());
         } catch (DAOException e) {
             log.error("Errore DAO apertura ticket", e);
             showError("Errore interno del sistema. Riprovare.");
