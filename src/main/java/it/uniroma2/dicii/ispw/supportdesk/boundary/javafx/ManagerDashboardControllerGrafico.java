@@ -72,12 +72,32 @@ public class ManagerDashboardControllerGrafico {
     @FXML private TableColumn<TicketRecord, String>  corrColStatus;
     @FXML private TableColumn<TicketRecord, String>  corrColSla;
 
+    // Detail panel condiviso
+    @FXML private javafx.scene.layout.VBox  detailPanel;
+    @FXML private Label detailId;
+    @FXML private Label detailTitle;
+    @FXML private Label detailDescription;
+    @FXML private Label detailCategory;
+    @FXML private Label detailPriority;
+    @FXML private Label detailStatus;
+    @FXML private Label detailDataApertura;
+    @FXML private Label detailSla;
+    @FXML private Label detailTechnician;
+
     @FXML
     public void initialize() {
         welcomeLabel.setText("Benvenuto, " + SessionContext.getCurrentUser().name());
         bindAllTicketsTable();
         bindSlaTable();
         bindCorrelatedTable();
+
+        allTicketsTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, o, n) -> { if (n != null) populateDetail(n); else hideDetail(); });
+        slaTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, o, n) -> { if (n != null) populateDetail(n); else hideDetail(); });
+        correlatedTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, o, n) -> { if (n != null) populateDetail(n); else hideDetail(); });
+
         loadAllTickets();
     }
 
@@ -167,6 +187,34 @@ public class ManagerDashboardControllerGrafico {
         corrColCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         corrColStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
         corrColSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
+    }
+
+    @FXML
+    public void onCloseDetail() {
+        hideDetail();
+        allTicketsTable.getSelectionModel().clearSelection();
+        slaTable.getSelectionModel().clearSelection();
+        correlatedTable.getSelectionModel().clearSelection();
+    }
+
+    private void populateDetail(TicketRecord t) {
+        detailId.setText(String.valueOf(t.id()));
+        detailTitle.setText(t.title());
+        detailDescription.setText(t.description());
+        detailCategory.setText(t.getCategory());
+        detailPriority.setText(t.getPriority());
+        detailStatus.setText(t.getStatus());
+        detailDataApertura.setText(t.getDataApertura());
+        detailSla.setText(t.getScadenzaSla());
+        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
+                ? "Non assegnato" : t.getAssignedTechnicianName());
+        detailPanel.setVisible(true);
+        detailPanel.setManaged(true);
+    }
+
+    private void hideDetail() {
+        detailPanel.setVisible(false);
+        detailPanel.setManaged(false);
     }
 
     private void showError(String title, String msg) {

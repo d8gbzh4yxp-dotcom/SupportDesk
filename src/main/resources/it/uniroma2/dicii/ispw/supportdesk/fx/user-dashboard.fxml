@@ -90,6 +90,45 @@
                         <TableColumn fx:id="colSla"      text="Scadenza SLA" prefWidth="140"/>
                     </columns>
                 </TableView>
+
+                <!-- DETAIL PANEL: appare inline quando si clicca una riga -->
+                <VBox fx:id="detailPanel" visible="false" managed="false" spacing="6"
+                      style="-fx-background-color: #E3F2FD;
+                             -fx-background-radius: 6;
+                             -fx-border-color: #90CAF9;
+                             -fx-border-radius: 6;
+                             -fx-border-width: 1;">
+                    <padding><Insets top="12" bottom="12" left="16" right="16"/></padding>
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Dettaglio Ticket"
+                               style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #1A237E;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✕" onAction="#onCloseDetail"
+                                style="-fx-background-color: transparent; -fx-text-fill: #616161;
+                                       -fx-cursor: hand; -fx-font-size: 13px;"/>
+                    </HBox>
+                    <Separator/>
+                    <GridPane hgap="20" vgap="5">
+                        <Label text="ID:"          GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailId"    GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Titolo:"      GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailTitle" GridPane.rowIndex="1" GridPane.columnIndex="1" wrapText="true"/>
+                        <Label text="Descrizione:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailDescription" GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true" maxWidth="380"/>
+                        <Label text="Categoria:"   GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailCategory" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <Label text="Priorità:"    GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailPriority" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        <Label text="Stato:"       GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailStatus" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                        <Label text="Aperto il:"   GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailDataApertura" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                        <Label text="Scadenza SLA:" GridPane.rowIndex="7" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailSla"   GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                        <Label text="Tecnico:"     GridPane.rowIndex="8" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
+                        <Label fx:id="detailTechnician" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </VBox>
             </VBox>
 
         </HBox>

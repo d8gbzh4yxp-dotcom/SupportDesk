@@ -36,13 +36,24 @@ public class UserDashboardControllerGrafico {
 
     @FXML private Label     welcomeLabel;
 
-    @FXML private TableView<TicketRecord>          ticketTable;
+    @FXML private TableView<TicketRecord>               ticketTable;
     @FXML private TableColumn<TicketRecord, Integer>    colId;
     @FXML private TableColumn<TicketRecord, String>     colTitle;
     @FXML private TableColumn<TicketRecord, String>     colCategory;
     @FXML private TableColumn<TicketRecord, String>     colPriority;
     @FXML private TableColumn<TicketRecord, String>     colStatus;
     @FXML private TableColumn<TicketRecord, String>     colSla;
+
+    @FXML private javafx.scene.layout.VBox  detailPanel;
+    @FXML private Label detailId;
+    @FXML private Label detailTitle;
+    @FXML private Label detailDescription;
+    @FXML private Label detailCategory;
+    @FXML private Label detailPriority;
+    @FXML private Label detailStatus;
+    @FXML private Label detailDataApertura;
+    @FXML private Label detailSla;
+    @FXML private Label detailTechnician;
 
     @FXML
     public void initialize() {
@@ -55,6 +66,12 @@ public class UserDashboardControllerGrafico {
         colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+
+        ticketTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldVal, newVal) -> {
+                    if (newVal != null) populateDetail(newVal);
+                    else hideDetail();
+                });
 
         loadMyTickets();
     }
@@ -85,6 +102,32 @@ public class UserDashboardControllerGrafico {
             log.error("Errore caricamento ticket", e);
             showError("Errore", "Impossibile caricare i ticket.");
         }
+    }
+
+    @FXML
+    public void onCloseDetail() {
+        hideDetail();
+        ticketTable.getSelectionModel().clearSelection();
+    }
+
+    private void populateDetail(TicketRecord t) {
+        detailId.setText(String.valueOf(t.id()));
+        detailTitle.setText(t.title());
+        detailDescription.setText(t.description());
+        detailCategory.setText(t.getCategory());
+        detailPriority.setText(t.getPriority());
+        detailStatus.setText(t.getStatus());
+        detailDataApertura.setText(t.getDataApertura());
+        detailSla.setText(t.getScadenzaSla());
+        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
+                ? "Non assegnato" : t.getAssignedTechnicianName());
+        detailPanel.setVisible(true);
+        detailPanel.setManaged(true);
+    }
+
+    private void hideDetail() {
+        detailPanel.setVisible(false);
+        detailPanel.setManaged(false);
     }
 
     private void showError(String title, String msg) {

@@ -54,6 +54,17 @@ public class TechDashboardControllerGrafico {
     @FXML private TextField         kbSearchField;
     @FXML private ListView<String>  kbResultsList;
 
+    @FXML private javafx.scene.layout.VBox  detailPanel;
+    @FXML private Label detailId;
+    @FXML private Label detailTitle;
+    @FXML private Label detailDescription;
+    @FXML private Label detailCategory;
+    @FXML private Label detailPriority;
+    @FXML private Label detailStatus;
+    @FXML private Label detailDataApertura;
+    @FXML private Label detailSla;
+    @FXML private Label detailTechnician;
+
     @FXML
     public void initialize() {
         welcomeLabel.setText("Benvenuto, " + SessionContext.getCurrentUser().name());
@@ -64,6 +75,12 @@ public class TechDashboardControllerGrafico {
         colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+
+        ticketTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldVal, newVal) -> {
+                    if (newVal != null) populateDetail(newVal);
+                    else hideDetail();
+                });
 
         loadAssignedTickets();
     }
@@ -141,6 +158,32 @@ public class TechDashboardControllerGrafico {
         } catch (SupportDeskException e) {
             actionErrorLabel.setText(e.getMessage());
         }
+    }
+
+    @FXML
+    public void onCloseDetail() {
+        hideDetail();
+        ticketTable.getSelectionModel().clearSelection();
+    }
+
+    private void populateDetail(TicketRecord t) {
+        detailId.setText(String.valueOf(t.id()));
+        detailTitle.setText(t.title());
+        detailDescription.setText(t.description());
+        detailCategory.setText(t.getCategory());
+        detailPriority.setText(t.getPriority());
+        detailStatus.setText(t.getStatus());
+        detailDataApertura.setText(t.getDataApertura());
+        detailSla.setText(t.getScadenzaSla());
+        detailTechnician.setText(t.getAssignedTechnicianName().isBlank()
+                ? "Non assegnato" : t.getAssignedTechnicianName());
+        detailPanel.setVisible(true);
+        detailPanel.setManaged(true);
+    }
+
+    private void hideDetail() {
+        detailPanel.setVisible(false);
+        detailPanel.setManaged(false);
     }
 
     private void showError(String title, String msg) {
