@@ -36,7 +36,7 @@
             <padding><Insets top="16" bottom="16" left="16" right="16"/></padding>
 
             <!-- PANNELLO SINISTRO: Apri Ticket -->
-            <VBox spacing="14" prefWidth="320"
+            <VBox spacing="14" prefWidth="260" alignment="TOP_CENTER"
                   style="-fx-background-color: white;
                          -fx-background-radius: 8;
                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
@@ -46,33 +46,20 @@
                        style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
                 <Separator/>
 
-                <Label text="Titolo *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
-                <TextField fx:id="titleField" promptText="Descrivi brevemente il problema"
-                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+                <Label text="Hai un problema? Apri un ticket e un tecnico ti assisterà."
+                       wrapText="true"
+                       style="-fx-text-fill: #616161; -fx-font-size: 13px;"/>
 
-                <Label text="Descrizione *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
-                <TextArea fx:id="descriptionArea" promptText="Fornisci i dettagli del problema..."
-                          prefRowCount="4" wrapText="true"
-                          style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
-
-                <Label text="Categoria *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
-                <ComboBox fx:id="categoryBox" maxWidth="Infinity" promptText="Seleziona categoria"/>
-
-                <Label text="Priorità *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
-                <ComboBox fx:id="priorityBox" maxWidth="Infinity" promptText="Seleziona priorità"/>
-
-                <Label fx:id="formErrorLabel" text="" wrapText="true"
-                       style="-fx-text-fill: #C62828; -fx-font-size: 11px;"/>
-
-                <Button text="Invia Ticket"
-                        onAction="#onSubmitTicket"
+                <Button text="Apri Ticket"
+                        onAction="#onOpenTicket"
                         maxWidth="Infinity"
                         style="-fx-background-color: #1565C0;
                                -fx-text-fill: white;
                                -fx-font-weight: bold;
-                               -fx-padding: 10;
+                               -fx-padding: 12;
                                -fx-background-radius: 4;
-                               -fx-cursor: hand;"/>
+                               -fx-cursor: hand;
+                               -fx-font-size: 14px;"/>
             </VBox>
 
             <!-- PANNELLO DESTRO: I miei ticket -->
@@ -92,7 +79,8 @@
                 </HBox>
                 <Separator/>
 
-                <TableView fx:id="ticketTable" VBox.vgrow="ALWAYS" placeholder="&lt;Label text='Nessun ticket trovato'/&gt;">
+                <TableView fx:id="ticketTable" VBox.vgrow="ALWAYS">
+                    <placeholder><Label text="Nessun ticket trovato"/></placeholder>
                     <columns>
                         <TableColumn fx:id="colId"       text="ID"        prefWidth="50"/>
                         <TableColumn fx:id="colTitle"    text="Titolo"    prefWidth="200"/>

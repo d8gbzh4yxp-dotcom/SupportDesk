@@ -15,12 +15,14 @@
 package it.uniroma2.dicii.ispw.supportdesk.utility.facade;
 
 import it.uniroma2.dicii.ispw.supportdesk.bean.TicketBean;
-import it.uniroma2.dicii.ispw.supportdesk.dao.PersistenceLayer;
+import it.uniroma2.dicii.ispw.supportdesk.controller.applicativo.TicketController;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
-import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
+import it.uniroma2.dicii.ispw.supportdesk.utility.observer.ManagerNotificationObserver;
+import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TechnicianNotificationObserver;
+import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.UserSession;
+
 @SuppressWarnings("java:S6548")
 public final class SubmitTicketFacade {
 
@@ -38,13 +40,12 @@ public final class SubmitTicketFacade {
         if (bean == null || !bean.isValid()) {
             throw new ValidationException("TicketBean non valido o incompleto");
         }
-        Ticket ticket = new Ticket(0, bean.getTitle(), bean.getDescription(),
-                bean.getCategory(), bean.getPriority());
-        PersistenceLayer.getInstance().insertTicket(ticket);
-        User tech = ticket.getAssignedTechnician();
-        String techName = tech != null ? tech.obtainName() : null;
-        return new TicketRecord(ticket.getId(), ticket.getTitle(), ticket.getDescription(),
-                ticket.getCategory(), ticket.getPriority(), ticket.getStatus(),
-                ticket.getDataApertura(), ticket.getScadenzaSla(), techName);
+        TicketController ctrl = new TicketController();
+        ctrl.addObserver(new TechnicianNotificationObserver());
+        ctrl.addObserver(new ManagerNotificationObserver());
+        String authorEmail = UserSession.getInstance().getCurrentUser() != null
+                ? UserSession.getInstance().getCurrentUser().obtainEmail()
+                : "unknown";
+        return ctrl.openTicket(bean, authorEmail);
     }
 }

@@ -34,4 +34,14 @@ public record TicketRecord(
         LocalDateTime dataApertura,
         LocalDateTime scadenzaSla,
         String assignedTechnicianName
-) {}
+) {
+    public int getId()                        { return id; }
+    public String getTitle()                  { return title; }
+    public String getDescription()            { return description; }
+    public String getCategory()               { return category != null ? category.name() : ""; }
+    public String getPriority()               { return priority != null ? priority.name() : ""; }
+    public String getStatus()                 { return status != null ? status.name() : ""; }
+    public String getDataApertura()           { return dataApertura != null ? dataApertura.toString() : ""; }
+    public String getScadenzaSla()            { return scadenzaSla != null ? scadenzaSla.toString() : "N/A"; }
+    public String getAssignedTechnicianName() { return assignedTechnicianName != null ? assignedTechnicianName : ""; }
+}

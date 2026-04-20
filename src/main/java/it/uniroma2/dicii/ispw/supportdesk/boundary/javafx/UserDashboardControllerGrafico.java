@@ -14,15 +14,10 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.boundary.javafx;
 
-import it.uniroma2.dicii.ispw.supportdesk.bean.TicketBean;
-import it.uniroma2.dicii.ispw.supportdesk.enumerator.Category;
-import it.uniroma2.dicii.ispw.supportdesk.enumerator.Priority;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
-import it.uniroma2.dicii.ispw.supportdesk.exception.SupportDeskException;
 import it.uniroma2.dicii.ispw.supportdesk.fx.SceneNavigator;
 import it.uniroma2.dicii.ispw.supportdesk.record.LoginRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
-import it.uniroma2.dicii.ispw.supportdesk.utility.facade.SubmitTicketFacade;
 import it.uniroma2.dicii.ispw.supportdesk.utility.facade.ViewTicketsFacade;
 import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.UserSession;
 import javafx.collections.FXCollections;
@@ -40,11 +35,6 @@ public class UserDashboardControllerGrafico {
     private static final Logger log = LoggerFactory.getLogger(UserDashboardControllerGrafico.class);
 
     @FXML private Label     welcomeLabel;
-    @FXML private TextField titleField;
-    @FXML private TextArea  descriptionArea;
-    @FXML private ComboBox<Category>  categoryBox;
-    @FXML private ComboBox<Priority>  priorityBox;
-    @FXML private Label     formErrorLabel;
 
     @FXML private TableView<TicketRecord>          ticketTable;
     @FXML private TableColumn<TicketRecord, Integer>    colId;
@@ -59,9 +49,6 @@ public class UserDashboardControllerGrafico {
         LoginRecord user = SessionContext.getCurrentUser();
         welcomeLabel.setText("Benvenuto, " + user.name() + " " + user.surname());
 
-        categoryBox.setItems(FXCollections.observableArrayList(Category.values()));
-        priorityBox.setItems(FXCollections.observableArrayList(Priority.values()));
-
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
@@ -73,24 +60,8 @@ public class UserDashboardControllerGrafico {
     }
 
     @FXML
-    public void onSubmitTicket() {
-        formErrorLabel.setText("");
-        TicketBean bean = buildBean();
-        if (!bean.isValid()) {
-            formErrorLabel.setText("Compila tutti i campi obbligatori.");
-            return;
-        }
-        try {
-            SubmitTicketFacade.getInstance().submitTicket(bean);
-            clearForm();
-            loadMyTickets();
-            showInfo("Ticket inviato", "Il tuo ticket è stato aperto con successo.");
-        } catch (DAOException e) {
-            log.error("Errore DAO apertura ticket", e);
-            showError("Errore", "Errore interno del sistema. Riprovare.");
-        } catch (SupportDeskException e) {
-            formErrorLabel.setText(e.getMessage());
-        }
+    public void onOpenTicket() throws IOException {
+        SceneNavigator.navigateTo("open-ticket.fxml", "Apri Ticket");
     }
 
     @FXML
@@ -116,22 +87,6 @@ public class UserDashboardControllerGrafico {
         }
     }
 
-    private TicketBean buildBean() {
-        TicketBean bean = new TicketBean();
-        bean.setTitle(titleField.getText().trim());
-        bean.setDescription(descriptionArea.getText().trim());
-        bean.setCategory(categoryBox.getValue());
-        bean.setPriority(priorityBox.getValue());
-        return bean;
-    }
-
-    private void clearForm() {
-        titleField.clear();
-        descriptionArea.clear();
-        categoryBox.setValue(null);
-        priorityBox.setValue(null);
-    }
-
     private void showError(String title, String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -139,10 +94,4 @@ public class UserDashboardControllerGrafico {
         alert.showAndWait();
     }
 
-    private void showInfo(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
 }

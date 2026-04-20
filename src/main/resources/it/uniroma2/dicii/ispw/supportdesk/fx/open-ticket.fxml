@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="it.uniroma2.dicii.ispw.supportdesk.boundary.javafx.OpenTicketControllerGrafico"
+            style="-fx-background-color: #ECEFF1;">
+
+    <!-- ── HEADER ──────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #1A237E; -fx-padding: 14 20;">
+            <Button text="← Torna alla Dashboard" onAction="#onBack"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #90CAF9;
+                           -fx-border-color: #90CAF9;
+                           -fx-border-radius: 4;
+                           -fx-cursor: hand;
+                           -fx-padding: 5 12;"/>
+            <Label text="SupportDesk"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label text="/ Apri Ticket"
+                   style="-fx-text-fill: #90CAF9; -fx-font-size: 14px;"/>
+        </HBox>
+    </top>
+
+    <!-- ── FORM ─────────────────────────────────────────────────── -->
+    <center>
+        <VBox alignment="TOP_CENTER">
+            <padding><Insets top="32" bottom="32" left="32" right="32"/></padding>
+
+            <VBox spacing="14" maxWidth="520"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 8;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);">
+                <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+
+                <Label text="Nuovo Ticket"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1A237E;"/>
+                <Separator/>
+
+                <Label text="Titolo *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <TextField fx:id="titleField" promptText="Descrivi brevemente il problema"
+                           style="-fx-padding: 8; -fx-background-radius: 4;
+                                  -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+
+                <Label text="Descrizione *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <TextArea fx:id="descriptionArea" promptText="Fornisci i dettagli del problema..."
+                          prefRowCount="5" wrapText="true"
+                          style="-fx-padding: 8; -fx-background-radius: 4;
+                                 -fx-border-color: #E0E0E0; -fx-border-radius: 4;"/>
+
+                <Label text="Categoria *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <ComboBox fx:id="categoryBox" maxWidth="Infinity" promptText="Seleziona categoria"/>
+
+                <Label text="Priorità *" style="-fx-font-size: 12px; -fx-text-fill: #616161;"/>
+                <ComboBox fx:id="priorityBox" maxWidth="Infinity" promptText="Seleziona priorità"/>
+
+                <Label fx:id="errorLabel" text="" wrapText="true"
+                       style="-fx-text-fill: #C62828; -fx-font-size: 11px;"/>
+
+                <Button text="Invia Ticket"
+                        onAction="#onSubmitTicket"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #1565C0;
+                               -fx-text-fill: white;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10;
+                               -fx-background-radius: 4;
+                               -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -30,7 +30,6 @@ import java.util.Set;
  *   REOPENED → ASSIGNED
  */
 public enum TicketStatus {
-
     OPEN {
         @Override
         public Set<TicketStatus> nextStates() {
