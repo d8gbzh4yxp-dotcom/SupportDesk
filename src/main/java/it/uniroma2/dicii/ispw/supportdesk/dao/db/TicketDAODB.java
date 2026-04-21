@@ -31,13 +31,13 @@ import java.util.List;
 public class TicketDAODB implements TicketDAO {
 
     private static final String SQL_INSERT =
-        "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla) VALUES (?,?,?,?,?,?,?)";
+        "INSERT INTO tickets (title, description, category, priority, status, data_apertura, scadenza_sla, author_email) VALUES (?,?,?,?,?,?,?,?)";
     private static final String TICKET_COLS =
-        "id, title, description, category, priority, status, data_apertura, assigned_technician_email";
+        "id, title, description, category, priority, status, data_apertura, assigned_technician_email, author_email";
     private static final String SELECT_TICKETS = "SELECT " + TICKET_COLS + " FROM tickets";
     private static final String SQL_FIND_BY_ID    = SELECT_TICKETS + " WHERE id = ?";
     private static final String SQL_FIND_ALL      = SELECT_TICKETS;
-    private static final String SQL_FIND_BY_EMAIL = SELECT_TICKETS + " WHERE assigned_technician_email = ?";
+    private static final String SQL_FIND_BY_EMAIL = SELECT_TICKETS + " WHERE author_email = ?";
     private static final String SQL_UPDATE =
         "UPDATE tickets SET status = ?, assigned_technician_email = ? WHERE id = ?";
     private static final String SQL_DELETE =
@@ -54,6 +54,7 @@ public class TicketDAODB implements TicketDAO {
             ps.setString(5, ticket.getStatus().name());
             ps.setTimestamp(6, Timestamp.valueOf(ticket.getDataApertura()));
             ps.setTimestamp(7, Timestamp.valueOf(ticket.getScadenzaSla()));
+            ps.setString(8, ticket.getAuthorEmail());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Errore insert ticket", e);
@@ -137,6 +138,7 @@ public class TicketDAODB implements TicketDAO {
         Priority priority   = Priority.valueOf(rs.getString("priority"));
         TicketStatus status = TicketStatus.valueOf(rs.getString("status"));
         LocalDateTime data  = rs.getTimestamp("data_apertura").toLocalDateTime();
-        return new Ticket(id, title, description, category, priority, data, status);
+        String authorEmail  = rs.getString("author_email");
+        return new Ticket(id, title, description, category, priority, data, status, authorEmail);
     }
 }

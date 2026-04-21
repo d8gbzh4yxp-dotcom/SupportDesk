@@ -1,0 +1,6 @@
+2026-04-20 19:38:43.686 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per giovanni.rossi@azienda.it
+2026-04-20 19:54:38.058 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per giovanni.rossi@azienda.it
+2026-04-20 19:58:43.046 [JavaFX Application Thread] INFO  i.u.d.i.s.u.o.TechnicianNotificationObserver - [NOTIFICA TECNICO] Nuovo ticket #11 — «Surriscaldamento scheda grafica» — assegnato a: nessuno
+2026-04-20 19:58:43.047 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.TicketController - Ticket 11 aperto da giovanni.rossi@azienda.it
+2026-04-20 20:00:39.426 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per admin@supportdesk.it
+2026-04-20 20:02:01.300 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per marco.bianchi@supportdesk.it

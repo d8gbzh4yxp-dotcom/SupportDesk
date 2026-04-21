@@ -34,27 +34,31 @@ public class Ticket {
     private final Priority priority;
     private final LocalDateTime dataApertura;
     private final LocalDateTime scadenzaSla;
+    private final String authorEmail;
     private TicketStatus status;
     private User assignedTechnician;
 
-    public Ticket(int id, String title, String description, Category category, Priority priority) {
+    public Ticket(int id, String title, String description, Category category, Priority priority,
+                  String authorEmail) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.priority = priority;
+        this.authorEmail = authorEmail;
         this.dataApertura = LocalDateTime.now();
         this.scadenzaSla = dataApertura.plusHours(priority.getMaxSlaHours());
         this.status = TicketStatus.OPEN;
     }
 
     public Ticket(int id, String title, String description, Category category, Priority priority,
-                  LocalDateTime dataApertura, TicketStatus status) {
+                  LocalDateTime dataApertura, TicketStatus status, String authorEmail) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.priority = priority;
+        this.authorEmail = authorEmail;
         this.dataApertura = dataApertura;
         this.scadenzaSla = dataApertura.plusHours(priority.getMaxSlaHours());
         this.status = status;
@@ -102,6 +106,10 @@ public class Ticket {
 
     public TicketStatus getStatus() {
         return status;
+    }
+
+    public String getAuthorEmail() {
+        return authorEmail;
     }
 
     public User getAssignedTechnician() {

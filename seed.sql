@@ -6,6 +6,9 @@
 --   user 1  : giovanni@azienda.it   / user123
 --   user 2  : sara@azienda.it       / user123
 
+-- Migrazione: aggiunge la colonna autore alla tabella tickets
+ALTER TABLE tickets ADD COLUMN IF NOT EXISTS author_email VARCHAR(255);
+
 INSERT INTO users (name, surname, email, credential_hash, role, specialization) VALUES
   ('Admin',    'Sistema', 'admin@supportdesk.it', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'MANAGER',    NULL),
   ('Marco',    'Bianchi', 'marco@supportdesk.it', '3ac40463b419a7de590185c7121f0bfbe411d6168699e8014f521b050b1d6653', 'TECHNICIAN', 'NETWORK'),

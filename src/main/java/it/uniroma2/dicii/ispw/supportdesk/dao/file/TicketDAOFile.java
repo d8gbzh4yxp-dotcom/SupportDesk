@@ -29,7 +29,7 @@ import java.util.List;
 public class TicketDAOFile implements TicketDAO {
     private static final String SEP = "|";
     private static final String NULL_TOKEN = "null";
-    private static final int FIELDS = 9;
+    private static final int FIELDS = 10;
     private static final String DATA_FILE = FilePathResolver.resolve("tickets.csv");
 
     @Override
@@ -57,8 +57,7 @@ public class TicketDAOFile implements TicketDAO {
     public List<Ticket> findByUserEmail(String email) throws DAOException {
         List<Ticket> result = new ArrayList<>();
         for (Ticket t : findAll()) {
-            if (t.getAssignedTechnician() != null
-                    && email.equals(t.getAssignedTechnician().obtainEmail())) {
+            if (email.equals(t.getAuthorEmail())) {
                 result.add(t);
             }
         }
@@ -103,7 +102,8 @@ public class TicketDAOFile implements TicketDAO {
             TicketStatus status = TicketStatus.valueOf(p[5]);
             LocalDateTime data  = LocalDateTime.parse(p[6]);
             // p[7] = scadenzaSla stored for reference; recalculated in constructor
-            return new Ticket(id, title, description, category, priority, data, status);
+            String authorEmail = p[8];
+            return new Ticket(id, title, description, category, priority, data, status, authorEmail);
         } catch (Exception e) {
             throw new DAOException("Errore parsing riga ticket: " + line, e);
         }
@@ -112,10 +112,11 @@ public class TicketDAOFile implements TicketDAO {
     private String buildLine(int id, Ticket t) {
         String techEmail = t.getAssignedTechnician() != null
             ? t.getAssignedTechnician().obtainEmail() : NULL_TOKEN;
+        String authorEmail = t.getAuthorEmail() != null ? t.getAuthorEmail() : NULL_TOKEN;
         return id + SEP + t.getTitle() + SEP + t.getDescription() + SEP
             + t.getCategory().name() + SEP + t.getPriority().name() + SEP
             + t.getStatus().name() + SEP + t.getDataApertura() + SEP
-            + t.getScadenzaSla() + SEP + techEmail;
+            + t.getScadenzaSla() + SEP + authorEmail + SEP + techEmail;
     }
 
     private int computeNextId() throws DAOException {

@@ -7,7 +7,9 @@
       "Read(//c/Users/crist/Idee-ISPW/**)",
       "Bash(xargs grep *)",
       "Bash(grep *)",
-      "mcp__plugin_claude-mem_mcp-search__search"
+      "mcp__plugin_claude-mem_mcp-search__search",
+      "Bash(python3 *)",
+      "Bash(mvn compile *)"
     ]
   }
 }
