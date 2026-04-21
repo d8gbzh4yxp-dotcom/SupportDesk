@@ -17,11 +17,13 @@ package it.uniroma2.dicii.ispw.supportdesk.controller.applicativo;
 import it.uniroma2.dicii.ispw.supportdesk.bean.TicketBean;
 import it.uniroma2.dicii.ispw.supportdesk.dao.PersistenceLayer;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
+import it.uniroma2.dicii.ispw.supportdesk.exception.AssignmentException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
+import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.EventType;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TicketObserver;
@@ -70,7 +72,7 @@ public class TicketController implements TicketSubject {
                 .build();
         notifyObservers(EventType.TICKET_OPEN, ticket);
         PersistenceLayer.getInstance().insertTicket(ticket);
-        launchCorrelationAnalysis(ticket);
+        launchBackgroundTasks(ticket);
         log.info("Ticket {} aperto da {}", ticket.getId(), authorEmail);
         return toRecord(ticket);
     }
@@ -99,16 +101,49 @@ public class TicketController implements TicketSubject {
         return toRecord(ticket);
     }
 
-    private void launchCorrelationAnalysis(Ticket ticket) {
-        Thread t = new Thread(() -> {
+    private void launchBackgroundTasks(Ticket ticket) {
+        int id = ticket.getId();
+
+        Thread sla = new Thread(() -> {
+            try {
+                new SLAController().checkAndNotify(id, this);
+            } catch (Exception e) {
+                log.info("SLA monitoring non disponibile per ticket {}", id);
+            }
+        });
+
+        Thread correlation = new Thread(() -> {
             try {
                 new CorrelationController().analyzeCorrelations(ticket);
             } catch (Exception e) {
-                log.info("Correlazione non disponibile per ticket {}", ticket.getId());
+                log.info("Correlazione non disponibile per ticket {}", id);
             }
         });
-        t.setDaemon(true);
-        t.start();
+
+        Thread coordinator = new Thread(() -> {
+            sla.start();
+            correlation.start();
+            try {
+                sla.join();
+                correlation.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+            AssignmentController ac = new AssignmentController();
+            try {
+                User technician = ac.obtainAvailableTechnician(ticket);
+                ac.assignTicket(ticket, technician);
+                notifyObservers(EventType.TICKET_CAMBIO_STATO, ticket);
+            } catch (AssignmentException e) {
+                log.info("Nessun tecnico disponibile per ticket {} — richiesta assegnazione manuale", id);
+                notifyObservers(EventType.ASSEGNAZIONE_MANUALE, ticket);
+            } catch (Exception e) {
+                log.info("Assegnazione non disponibile per ticket {}", id);
+            }
+        });
+
+        coordinator.start();
     }
 
     static TicketRecord toRecord(Ticket t) {

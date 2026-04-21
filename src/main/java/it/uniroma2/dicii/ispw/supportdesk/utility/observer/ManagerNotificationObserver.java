@@ -32,6 +32,8 @@ public class ManagerNotificationObserver implements TicketObserver {
                     log.warn("[NOTIFICA MANAGER] SLA VIOLATO — Ticket #{} {}", ticket.getId(), ticket.getTitle());
             case SLA_IN_SCADENZA ->
                     log.warn("[NOTIFICA MANAGER] SLA IN SCADENZA — Ticket #{} {}", ticket.getId(), ticket.getTitle());
+            case ASSEGNAZIONE_MANUALE ->
+                    log.warn("[NOTIFICA MANAGER] Nessun tecnico disponibile — Ticket #{} richiede assegnazione manuale", ticket.getId());
             default -> { /* altri eventi non di competenza del manager */ }
         }
     }

@@ -2,12 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="it.uniroma2.dicii.ispw.supportdesk.boundary.javafx.LoginControllerGrafico"
-           style="-fx-background-color: #1A237E;">
+           style="-fx-background-color: transparent;">
+
+    <ImageView fitWidth="1920" fitHeight="1080" preserveRatio="false" mouseTransparent="true">
+        <image><Image url="@login-bg.png"/></image>
+    </ImageView>
 
     <VBox alignment="CENTER" spacing="0" maxWidth="420">
 

@@ -23,7 +23,6 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
-import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.AssignmentHandler;
 import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.DefaultHandler;
 import it.uniroma2.dicii.ispw.supportdesk.utility.chainofresponsibility.ExpertiseHandler;
@@ -41,20 +40,22 @@ public class AssignmentController {
     private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
 
-    public TicketRecord assignTechnician(int ticketId)
-            throws DAOException, TicketNotFoundException, AssignmentException, InvalidTransitionException {
-        Ticket ticket = PersistenceLayer.getInstance().findTicketById(ticketId);
+    public User obtainAvailableTechnician(Ticket ticket)
+            throws DAOException, AssignmentException {
         List<User> technicians = PersistenceLayer.getInstance().findUsersByRole(Role.TECHNICIAN);
         List<Ticket> allTickets = PersistenceLayer.getInstance().findAllTickets();
         Map<String, Integer> workloadMap = computeWorkloadMap(allTickets);
         AssignmentHandler chain = buildChain(workloadMap);
-        User technician = chain.handle(ticket, technicians);
+        return chain.handle(ticket, technicians);
+    }
+
+    public void assignTicket(Ticket ticket, User technician)
+            throws DAOException, TicketNotFoundException, InvalidTransitionException {
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
         String technicianEmail = technician.obtainEmail();
-        log.info("Ticket {} assegnato a {}", ticketId, technicianEmail);
-        return TicketController.toRecord(ticket);
+        log.info("Ticket {} assegnato a {}", ticket.getId(), technicianEmail);
     }
 
     private AssignmentHandler buildChain(Map<String, Integer> workloadMap) {

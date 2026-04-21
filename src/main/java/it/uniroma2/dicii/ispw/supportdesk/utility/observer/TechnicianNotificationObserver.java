@@ -14,6 +14,7 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.utility.observer;
 
+import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,12 @@ public class TechnicianNotificationObserver implements TicketObserver {
 
     @Override
     public void onTicketEvent(EventType eventType, Ticket ticket) {
-        if (eventType == EventType.TICKET_OPEN) {
-            log.info("[NOTIFICA TECNICO] Nuovo ticket #{} — {} — assegnato a: {}",
-                    ticket.getId(), ticket.getTitle(),
-                    ticket.getAssignedTechnician() != null
-                            ? ticket.getAssignedTechnician().obtainName() : "nessuno");
+        if (eventType == EventType.TICKET_CAMBIO_STATO
+                && ticket.getStatus() == TicketStatus.ASSIGNED
+                && ticket.getAssignedTechnician() != null) {
+            String techName = ticket.getAssignedTechnician().obtainName()
+                    + " " + ticket.getAssignedTechnician().obtainSurname();
+            log.info("[NOTIFICA TECNICO] Ticket #{} assegnato a {} — {}", ticket.getId(), techName, ticket.getTitle());
         }
     }
 }

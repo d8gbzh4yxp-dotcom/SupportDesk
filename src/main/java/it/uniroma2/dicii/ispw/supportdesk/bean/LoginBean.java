@@ -43,9 +43,11 @@ public class LoginBean {
         this.password = password;
     }
 
-    /** Validazione sintattica: campi obbligatori non nulli e non vuoti. */
+    private static final String EMAIL_REGEX = "^[\\w.+\\-]+@[\\w.\\-]+\\.[a-zA-Z]{2,}$";
+
+    /** Validazione sintattica: formato email corretto e password non vuota. */
     public boolean isValid() {
-        return email != null && !email.isBlank()
+        return email != null && email.matches(EMAIL_REGEX)
                 && password != null && !password.isBlank();
     }
 }

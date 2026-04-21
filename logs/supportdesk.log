@@ -2,3 +2,5 @@
 2026-04-21 14:06:26.449 [JavaFX Application Thread] INFO  i.u.d.i.s.u.o.TechnicianNotificationObserver - [NOTIFICA TECNICO] Nuovo ticket #11 — ciao — assegnato a: nessuno
 2026-04-21 14:06:26.450 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.TicketController - Ticket 11 aperto da giovanni.rossi@azienda.it
 2026-04-21 14:07:03.722 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per marco.bianchi@supportdesk.it
+2026-04-21 14:36:32.057 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per admin@supportdesk.it
+2026-04-21 14:37:18.132 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per giovanni.rossi@azienda.it
