@@ -52,7 +52,8 @@ public class AssignmentController {
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
-        log.info("Ticket {} assegnato a {}", ticketId, technician.obtainEmail());
+        String technicianEmail = technician.obtainEmail();
+        log.info("Ticket {} assegnato a {}", ticketId, technicianEmail);
         return TicketController.toRecord(ticket);
     }
 
