@@ -38,30 +38,54 @@ public class Ticket {
     private TicketStatus status;
     private User assignedTechnician;
 
-    public Ticket(int id, String title, String description, Category category, Priority priority,
-                  String authorEmail) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.priority = priority;
-        this.authorEmail = authorEmail;
-        this.dataApertura = LocalDateTime.now();
-        this.scadenzaSla = dataApertura.plusHours(priority.getMaxSlaHours());
-        this.status = TicketStatus.OPEN;
+    private Ticket(Builder b) {
+        this.id = b.id;
+        this.title = b.title;
+        this.description = b.description;
+        this.category = b.category;
+        this.priority = b.priority;
+        this.authorEmail = b.authorEmail;
+        this.dataApertura = b.dataApertura;
+        this.scadenzaSla = b.dataApertura.plusHours(b.priority.getMaxSlaHours());
+        this.status = b.status;
     }
 
-    public Ticket(int id, String title, String description, Category category, Priority priority,
-                  LocalDateTime dataApertura, TicketStatus status, String authorEmail) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.priority = priority;
-        this.authorEmail = authorEmail;
-        this.dataApertura = dataApertura;
-        this.scadenzaSla = dataApertura.plusHours(priority.getMaxSlaHours());
-        this.status = status;
+    public static class Builder {
+        private final int id;
+        private final String title;
+        private final String description;
+        private final Category category;
+        private final Priority priority;
+        private String authorEmail;
+        private LocalDateTime dataApertura = LocalDateTime.now();
+        private TicketStatus status = TicketStatus.OPEN;
+
+        public Builder(int id, String title, String description, Category category, Priority priority) {
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.category = category;
+            this.priority = priority;
+        }
+
+        public Builder authorEmail(String authorEmail) {
+            this.authorEmail = authorEmail;
+            return this;
+        }
+
+        public Builder dataApertura(LocalDateTime dataApertura) {
+            this.dataApertura = dataApertura;
+            return this;
+        }
+
+        public Builder status(TicketStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Ticket build() {
+            return new Ticket(this);
+        }
     }
 
     /**

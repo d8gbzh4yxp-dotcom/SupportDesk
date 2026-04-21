@@ -64,8 +64,10 @@ public class TicketController implements TicketSubject {
         }
         List<Ticket> all = PersistenceLayer.getInstance().findAllTickets();
         int nextId = all.stream().mapToInt(Ticket::getId).max().orElse(0) + 1;
-        Ticket ticket = new Ticket(nextId, bean.getTitle(), bean.getDescription(),
-                bean.getCategory(), bean.getPriority(), authorEmail);
+        Ticket ticket = new Ticket.Builder(nextId, bean.getTitle(), bean.getDescription(),
+                bean.getCategory(), bean.getPriority())
+                .authorEmail(authorEmail)
+                .build();
         notifyObservers(EventType.TICKET_OPEN, ticket);
         PersistenceLayer.getInstance().insertTicket(ticket);
         launchCorrelationAnalysis(ticket);

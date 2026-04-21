@@ -139,6 +139,10 @@ public class TicketDAODB implements TicketDAO {
         TicketStatus status = TicketStatus.valueOf(rs.getString("status"));
         LocalDateTime data  = rs.getTimestamp("data_apertura").toLocalDateTime();
         String authorEmail  = rs.getString("author_email");
-        return new Ticket(id, title, description, category, priority, data, status, authorEmail);
+        return new Ticket.Builder(id, title, description, category, priority)
+                .dataApertura(data)
+                .status(status)
+                .authorEmail(authorEmail)
+                .build();
     }
 }

@@ -103,7 +103,11 @@ public class TicketDAOFile implements TicketDAO {
             LocalDateTime data  = LocalDateTime.parse(p[6]);
             // p[7] = scadenzaSla stored for reference; recalculated in constructor
             String authorEmail = p[8];
-            return new Ticket(id, title, description, category, priority, data, status, authorEmail);
+            return new Ticket.Builder(id, title, description, category, priority)
+                    .dataApertura(data)
+                    .status(status)
+                    .authorEmail(authorEmail)
+                    .build();
         } catch (Exception e) {
             throw new DAOException("Errore parsing riga ticket: " + line, e);
         }

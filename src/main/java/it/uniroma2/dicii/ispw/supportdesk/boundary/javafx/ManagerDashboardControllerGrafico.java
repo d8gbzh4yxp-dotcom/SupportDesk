@@ -119,9 +119,9 @@ public class ManagerDashboardControllerGrafico extends AbstractDashboardControll
                 return;
             }
             List<TicketRecord> correlated = correlationController.analyzeCorrelations(
-                    new it.uniroma2.dicii.ispw.supportdesk.model.Ticket(
+                    new it.uniroma2.dicii.ispw.supportdesk.model.Ticket.Builder(
                             target.id(), target.title(), target.description(),
-                            target.category(), target.priority(), (String) null));
+                            target.category(), target.priority()).build());
             correlatedTable.setItems(FXCollections.observableArrayList(correlated));
         } catch (DAOException e) {
             log.error("Errore ricerca ticket correlati", e);
