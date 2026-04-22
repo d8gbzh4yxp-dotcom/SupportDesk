@@ -128,7 +128,32 @@
                         <Label text="Tecnico:"     GridPane.rowIndex="8" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #455A64;"/>
                         <Label fx:id="detailTechnician" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
                     </GridPane>
+                    <Separator/>
+                    <Label text="Aggiungi un commento:"
+                           style="-fx-font-weight: bold; -fx-text-fill: #455A64; -fx-font-size: 12px;"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextArea fx:id="commentField" promptText="Scrivi un commento..."
+                                  prefRowCount="2" wrapText="true" HBox.hgrow="ALWAYS"
+                                  style="-fx-border-color: #90CAF9; -fx-border-radius: 4;
+                                         -fx-background-radius: 4; -fx-font-size: 12px;"/>
+                        <Button text="Invia" onAction="#onAddComment"
+                                style="-fx-background-color: #1565C0; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-padding: 8 16;
+                                       -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    </HBox>
                 </VBox>
+
+                <!-- Azioni sul ticket selezionato -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="actionErrorLabel" text=""
+                           style="-fx-text-fill: #C62828; -fx-font-size: 11px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnRiapri" text="Riapri Ticket" onAction="#onReopenTicket"
+                            visible="false" managed="false"
+                            style="-fx-background-color: #F57F17; -fx-text-fill: white;
+                                   -fx-font-weight: bold; -fx-padding: 8 16;
+                                   -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
             </VBox>
 
         </HBox>

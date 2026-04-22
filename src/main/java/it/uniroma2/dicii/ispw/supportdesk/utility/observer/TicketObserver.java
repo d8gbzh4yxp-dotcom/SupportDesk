@@ -14,8 +14,6 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.utility.observer;
 
-import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-
 public interface TicketObserver {
-    void onTicketEvent(EventType eventType, Ticket ticket);
+    void update(EventType event, Object payload);
 }

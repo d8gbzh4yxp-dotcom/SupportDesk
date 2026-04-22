@@ -23,7 +23,6 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
-import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.EventType;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TicketObserver;
@@ -43,19 +42,19 @@ public class TicketController implements TicketSubject {
     private final List<TicketObserver> observers = new CopyOnWriteArrayList<>();
 
     @Override
-    public void addObserver(TicketObserver observer) {
+    public void attach(TicketObserver observer) {
         observers.add(observer);
     }
 
     @Override
-    public void removeObserver(TicketObserver observer) {
+    public void detach(TicketObserver observer) {
         observers.remove(observer);
     }
 
     @Override
-    public void notifyObservers(EventType eventType, Ticket ticket) {
+    public void notifyObservers(EventType eventType, Object payload) {
         for (TicketObserver o : observers) {
-            o.onTicketEvent(eventType, ticket);
+            o.update(eventType, payload);
         }
     }
 
@@ -71,14 +70,14 @@ public class TicketController implements TicketSubject {
                 .authorEmail(authorEmail)
                 .build();
         notifyObservers(EventType.TICKET_OPEN, ticket);
-        PersistenceLayer.getInstance().insertTicket(ticket);
+        PersistenceLayer.getInstance().saveTicket(ticket);
         launchBackgroundTasks(ticket);
         log.info("Ticket {} aperto da {}", ticket.getId(), authorEmail);
         return toRecord(ticket);
     }
 
     public TicketRecord getTicket(int id) throws DAOException, TicketNotFoundException {
-        return toRecord(PersistenceLayer.getInstance().findTicketById(id));
+        return toRecord(PersistenceLayer.getInstance().getTicketById(id));
     }
 
     public List<TicketRecord> getAllTickets() throws DAOException {
@@ -87,13 +86,13 @@ public class TicketController implements TicketSubject {
     }
 
     public List<TicketRecord> getTicketsByUser(String email) throws DAOException {
-        return PersistenceLayer.getInstance().findTicketsByUserEmail(email)
+        return PersistenceLayer.getInstance().getTicketsByUser(email)
                 .stream().map(TicketController::toRecord).toList();
     }
 
     public TicketRecord changeStatus(int id, TicketStatus newStatus)
             throws DAOException, TicketNotFoundException, InvalidTransitionException {
-        Ticket ticket = PersistenceLayer.getInstance().findTicketById(id);
+        Ticket ticket = PersistenceLayer.getInstance().getTicketById(id);
         ticket.cambiaStato(newStatus);
         PersistenceLayer.getInstance().updateTicket(ticket);
         notifyObservers(EventType.TICKET_CAMBIO_STATO, ticket);
@@ -106,7 +105,7 @@ public class TicketController implements TicketSubject {
 
         Thread sla = new Thread(() -> {
             try {
-                new SLAController().checkAndNotify(id, this);
+                new SLAController().checkSLA(ticket, this);
             } catch (Exception e) {
                 log.info("SLA monitoring non disponibile per ticket {}", id);
             }
@@ -114,7 +113,7 @@ public class TicketController implements TicketSubject {
 
         Thread correlation = new Thread(() -> {
             try {
-                new CorrelationController().analyzeCorrelations(ticket);
+                new CorrelationController().findCorrelations(ticket);
             } catch (Exception e) {
                 log.info("Correlazione non disponibile per ticket {}", id);
             }
@@ -132,8 +131,7 @@ public class TicketController implements TicketSubject {
             }
             AssignmentController ac = new AssignmentController();
             try {
-                User technician = ac.obtainAvailableTechnician(ticket);
-                ac.assignTicket(ticket, technician);
+                ac.assign(ticket);
                 notifyObservers(EventType.TICKET_CAMBIO_STATO, ticket);
             } catch (AssignmentException e) {
                 log.info("Nessun tecnico disponibile per ticket {} — richiesta assegnazione manuale", id);

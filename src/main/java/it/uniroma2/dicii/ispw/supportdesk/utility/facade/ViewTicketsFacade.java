@@ -14,11 +14,14 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.utility.facade;
 
+import it.uniroma2.dicii.ispw.supportdesk.bean.CommentBean;
+import it.uniroma2.dicii.ispw.supportdesk.controller.applicativo.CommentController;
 import it.uniroma2.dicii.ispw.supportdesk.controller.applicativo.TicketController;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
+import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 
 import java.util.List;
@@ -27,6 +30,7 @@ import java.util.List;
 public final class ViewTicketsFacade {
 
     private final TicketController ticketController = new TicketController();
+    private final CommentController commentController = new CommentController();
 
     private ViewTicketsFacade() {}
 
@@ -49,5 +53,10 @@ public final class ViewTicketsFacade {
     public TicketRecord changeStatus(int ticketId, TicketStatus newStatus)
             throws DAOException, TicketNotFoundException, InvalidTransitionException {
         return ticketController.changeStatus(ticketId, newStatus);
+    }
+
+    public void addComment(CommentBean bean)
+            throws ValidationException, DAOException {
+        commentController.addComment(bean.getTicketId(), bean.getAuthorEmail(), bean.getText());
     }
 }

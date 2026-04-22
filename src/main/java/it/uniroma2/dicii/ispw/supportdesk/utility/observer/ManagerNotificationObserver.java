@@ -22,10 +22,10 @@ public class ManagerNotificationObserver implements TicketObserver {
 
     private static final Logger log = LoggerFactory.getLogger(ManagerNotificationObserver.class);
 
-
     @Override
-    public void onTicketEvent(EventType eventType, Ticket ticket) {
-        switch (eventType) {
+    public void update(EventType event, Object payload) {
+        if (!(payload instanceof Ticket ticket)) return;
+        switch (event) {
             case TICKET_CAMBIO_STATO ->
                     log.info("[NOTIFICA MANAGER] Ticket #{} cambiato stato → {}", ticket.getId(), ticket.getStatus());
             case SLA_VIOLATO ->

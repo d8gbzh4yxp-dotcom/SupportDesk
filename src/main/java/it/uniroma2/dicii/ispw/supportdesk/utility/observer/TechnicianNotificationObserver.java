@@ -23,10 +23,10 @@ public class TechnicianNotificationObserver implements TicketObserver {
 
     private static final Logger log = LoggerFactory.getLogger(TechnicianNotificationObserver.class);
 
-
     @Override
-    public void onTicketEvent(EventType eventType, Ticket ticket) {
-        if (eventType == EventType.TICKET_CAMBIO_STATO
+    public void update(EventType event, Object payload) {
+        if (!(payload instanceof Ticket ticket)) return;
+        if (event == EventType.TICKET_CAMBIO_STATO
                 && ticket.getStatus() == TicketStatus.ASSIGNED
                 && ticket.getAssignedTechnician() != null) {
             String techName = ticket.getAssignedTechnician().obtainName()

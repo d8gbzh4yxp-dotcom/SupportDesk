@@ -14,7 +14,10 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.boundary.javafx;
 
+import it.uniroma2.dicii.ispw.supportdesk.bean.CommentBean;
+import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
+import it.uniroma2.dicii.ispw.supportdesk.exception.SupportDeskException;
 import it.uniroma2.dicii.ispw.supportdesk.fx.SceneNavigator;
 import it.uniroma2.dicii.ispw.supportdesk.record.LoginRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
@@ -30,7 +33,10 @@ import java.util.List;
 
 public class UserDashboardControllerGrafico extends AbstractDashboardControllerGrafico {
 
-    @FXML private Label     welcomeLabel;
+    @FXML private Label    welcomeLabel;
+    @FXML private Label    actionErrorLabel;
+    @FXML private Button   btnRiapri;
+    @FXML private TextArea commentField;
 
     @FXML private TableView<TicketRecord>               ticketTable;
     @FXML private TableColumn<TicketRecord, Integer>    colId;
@@ -59,6 +65,65 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
                 });
 
         loadMyTickets();
+    }
+
+    @Override
+    protected void populateDetail(TicketRecord t) {
+        super.populateDetail(t);
+        actionErrorLabel.setText("");
+        boolean isResolved = t.status() == TicketStatus.RESOLVED;
+        btnRiapri.setVisible(isResolved);
+        btnRiapri.setManaged(isResolved);
+        if (commentField != null) commentField.clear();
+    }
+
+    @FXML
+    public void onAddComment() {
+        TicketRecord selected = ticketTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            actionErrorLabel.setText("Seleziona un ticket dalla lista.");
+            return;
+        }
+        String text = commentField.getText();
+        CommentBean bean = new CommentBean();
+        bean.setTicketId(selected.id());
+        bean.setAuthorEmail(SessionContext.getCurrentUser().email());
+        bean.setText(text);
+        if (!bean.isValid()) {
+            actionErrorLabel.setText("Il commento non può essere vuoto.");
+            return;
+        }
+        actionErrorLabel.setText("");
+        try {
+            ViewTicketsFacade.getInstance().addComment(bean);
+            commentField.clear();
+        } catch (DAOException e) {
+            log.error("Errore aggiunta commento al ticket {}", selected.id(), e);
+            showError("Errore", "Impossibile salvare il commento.");
+        } catch (SupportDeskException e) {
+            actionErrorLabel.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onReopenTicket() {
+        TicketRecord selected = ticketTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            actionErrorLabel.setText("Seleziona un ticket dalla lista.");
+            return;
+        }
+        actionErrorLabel.setText("");
+        try {
+            ViewTicketsFacade.getInstance().changeStatus(selected.id(), TicketStatus.REOPENED);
+            loadMyTickets();
+            hideDetail();
+            ticketTable.getSelectionModel().clearSelection();
+        } catch (DAOException e) {
+            log.error("Errore riapertura ticket {}", selected.id(), e);
+            showError("Errore", "Errore interno del sistema.");
+        } catch (SupportDeskException e) {
+            actionErrorLabel.setText(e.getMessage());
+        }
     }
 
     @FXML
@@ -93,5 +158,9 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
     public void onCloseDetail() {
         hideDetail();
         ticketTable.getSelectionModel().clearSelection();
+        actionErrorLabel.setText("");
+        commentField.clear();
+        btnRiapri.setVisible(false);
+        btnRiapri.setManaged(false);
     }
 }

@@ -39,11 +39,11 @@ public abstract class PersistenceLayer {
 
     // ── Ticket ────────────────────────────────────────────────────────────────
 
-    public void insertTicket(Ticket ticket) throws DAOException {
+    public void saveTicket(Ticket ticket) throws DAOException {
         ticketDAO.insert(ticket);
     }
 
-    public Ticket findTicketById(int id) throws DAOException, TicketNotFoundException {
+    public Ticket getTicketById(int id) throws DAOException, TicketNotFoundException {
         return ticketDAO.findById(id);
     }
 
@@ -51,7 +51,7 @@ public abstract class PersistenceLayer {
         return ticketDAO.findAll();
     }
 
-    public List<Ticket> findTicketsByUserEmail(String email) throws DAOException {
+    public List<Ticket> getTicketsByUser(String email) throws DAOException {
         return ticketDAO.findByUserEmail(email);
     }
 

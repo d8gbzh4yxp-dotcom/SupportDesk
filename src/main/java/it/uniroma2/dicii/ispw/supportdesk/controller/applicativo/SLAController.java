@@ -36,7 +36,7 @@ public class SLAController {
     private static final long SLA_WARNING_HOURS = 2;
 
     public boolean isSlaViolated(int ticketId) throws DAOException, TicketNotFoundException {
-        Ticket ticket = PersistenceLayer.getInstance().findTicketById(ticketId);
+        Ticket ticket = PersistenceLayer.getInstance().getTicketById(ticketId);
         boolean violated = LocalDateTime.now().isAfter(ticket.getScadenzaSla());
         if (violated) {
             log.warn("SLA violato per ticket {}", ticketId);
@@ -44,13 +44,12 @@ public class SLAController {
         return violated;
     }
 
-    public void checkAndNotify(int ticketId, TicketController ticketController)
-            throws DAOException, TicketNotFoundException, SLAViolatedException {
-        Ticket ticket = PersistenceLayer.getInstance().findTicketById(ticketId);
+    public void checkSLA(Ticket ticket, TicketController ticketController)
+            throws SLAViolatedException {
         LocalDateTime now = LocalDateTime.now();
         if (now.isAfter(ticket.getScadenzaSla())) {
             ticketController.notifyObservers(EventType.SLA_VIOLATO, ticket);
-            throw new SLAViolatedException("SLA violato per ticket " + ticketId);
+            throw new SLAViolatedException("SLA violato per ticket " + ticket.getId());
         }
         if (!now.isBefore(ticket.getScadenzaSla().minusHours(SLA_WARNING_HOURS))) {
             ticketController.notifyObservers(EventType.SLA_IN_SCADENZA, ticket);

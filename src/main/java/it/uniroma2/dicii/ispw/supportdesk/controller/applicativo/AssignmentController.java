@@ -40,22 +40,17 @@ public class AssignmentController {
     private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
 
-    public User obtainAvailableTechnician(Ticket ticket)
-            throws DAOException, AssignmentException {
+    public void assign(Ticket ticket)
+            throws DAOException, AssignmentException, TicketNotFoundException, InvalidTransitionException {
         List<User> technicians = PersistenceLayer.getInstance().findUsersByRole(Role.TECHNICIAN);
         List<Ticket> allTickets = PersistenceLayer.getInstance().findAllTickets();
         Map<String, Integer> workloadMap = computeWorkloadMap(allTickets);
         AssignmentHandler chain = buildChain(workloadMap);
-        return chain.handle(ticket, technicians);
-    }
-
-    public void assignTicket(Ticket ticket, User technician)
-            throws DAOException, TicketNotFoundException, InvalidTransitionException {
+        User technician = chain.handle(ticket, technicians);
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
-        String technicianEmail = technician.obtainEmail();
-        log.info("Ticket {} assegnato a {}", ticket.getId(), technicianEmail);
+        log.info("Ticket {} assegnato a {}", ticket.getId(), technician.obtainEmail());
     }
 
     private AssignmentHandler buildChain(Map<String, Integer> workloadMap) {

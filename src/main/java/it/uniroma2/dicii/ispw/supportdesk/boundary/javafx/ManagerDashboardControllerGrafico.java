@@ -118,7 +118,7 @@ public class ManagerDashboardControllerGrafico extends AbstractDashboardControll
                 correlationErrorLabel.setText("Ticket ID " + ticketId + " non trovato.");
                 return;
             }
-            List<TicketRecord> correlated = correlationController.analyzeCorrelations(
+            List<TicketRecord> correlated = correlationController.findCorrelations(
                     new it.uniroma2.dicii.ispw.supportdesk.model.Ticket.Builder(
                             target.id(), target.title(), target.description(),
                             target.category(), target.priority()).build());

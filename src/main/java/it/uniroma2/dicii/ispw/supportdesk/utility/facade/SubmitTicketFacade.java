@@ -36,13 +36,13 @@ public final class SubmitTicketFacade {
         return Holder.INSTANCE;
     }
 
-    public TicketRecord submitTicket(TicketBean bean) throws ValidationException, DAOException {
+    public TicketRecord openTicketWithWorkflow(TicketBean bean) throws ValidationException, DAOException {
         if (bean == null || !bean.isValid()) {
             throw new ValidationException("TicketBean non valido o incompleto");
         }
         TicketController ctrl = new TicketController();
-        ctrl.addObserver(new TechnicianNotificationObserver());
-        ctrl.addObserver(new ManagerNotificationObserver());
+        ctrl.attach(new TechnicianNotificationObserver());
+        ctrl.attach(new ManagerNotificationObserver());
         String authorEmail = UserSession.getInstance().getCurrentUser() != null
                 ? UserSession.getInstance().getCurrentUser().obtainEmail()
                 : "unknown";

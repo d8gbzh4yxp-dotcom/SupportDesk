@@ -26,7 +26,7 @@ import java.util.List;
 public class CorrelationController {
 
 
-    public List<TicketRecord> analyzeCorrelations(Ticket target)
+    public List<TicketRecord> findCorrelations(Ticket target)
             throws CorrelationEngineException, DAOException {
         List<Ticket> all = PersistenceLayer.getInstance().findAllTickets();
         List<Ticket> candidates = all.stream()

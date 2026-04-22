@@ -65,7 +65,7 @@ public class OpenTicketControllerGrafico {
         priorityBox.setValue(null);
     }
 
-    /** step 4 SD: utente preme "Invia" — step 5: boundary chiama ticketFacade.submitTicket() */
+    /** step 4 SD: utente preme "Invia" — step 5: boundary chiama ticketFacade.openTicketWithWorkflow() */
     @FXML
     public void onSubmitTicket() {
         errorLabel.setText("");
@@ -85,7 +85,7 @@ public class OpenTicketControllerGrafico {
         bean.setPriority(priority);
 
         try {
-            TicketRecord result = ticketFacade.submitTicket(bean);
+            TicketRecord result = ticketFacade.openTicketWithWorkflow(bean);
             showConfirmation(result.id());
         } catch (DAOException e) {
             log.error("Errore DAO apertura ticket", e);
