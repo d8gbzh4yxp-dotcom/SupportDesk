@@ -26,6 +26,9 @@ public class TechnicianNotificationObserver implements TicketObserver {
     @Override
     public void update(EventType event, Object payload) {
         if (!(payload instanceof Ticket ticket)) return;
+        if (event == EventType.TICKET_OPEN) {
+            log.info("[NOTIFICA TECNICI] Email inviata ai tecnici: nuovo ticket #{} in coda — {}.", ticket.getId(), ticket.getTitle());
+        }
         if (event == EventType.TICKET_CAMBIO_STATO
                 && ticket.getStatus() == TicketStatus.ASSIGNED
                 && ticket.getAssignedTechnician() != null) {

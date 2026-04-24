@@ -26,6 +26,8 @@ public class ManagerNotificationObserver implements TicketObserver {
     public void update(EventType event, Object payload) {
         if (!(payload instanceof Ticket ticket)) return;
         switch (event) {
+            case TICKET_OPEN ->
+                    log.info("[NOTIFICA MANAGER] Email inviata al manager: nuovo ticket #{} aperto — {}.", ticket.getId(), ticket.getTitle());
             case TICKET_CAMBIO_STATO ->
                     log.info("[NOTIFICA MANAGER] Ticket #{} cambiato stato → {}", ticket.getId(), ticket.getStatus());
             case SLA_VIOLATO ->

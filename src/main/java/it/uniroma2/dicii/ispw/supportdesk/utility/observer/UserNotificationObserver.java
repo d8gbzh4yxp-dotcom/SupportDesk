@@ -14,12 +14,18 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.utility.observer;
 
-public enum EventType {
-    TICKET_OPEN,
-    TICKET_RISOLTO,
-    TICKET_CAMBIO_STATO,
-    TICKET_CORRELATO_RILEVATO,
-    SLA_IN_SCADENZA,
-    SLA_VIOLATO,
-    ASSEGNAZIONE_MANUALE
+import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class UserNotificationObserver implements TicketObserver {
+
+    private static final Logger log = LoggerFactory.getLogger(UserNotificationObserver.class);
+
+    @Override
+    public void update(EventType event, Object payload) {
+        if (event == EventType.TICKET_RISOLTO && payload instanceof Ticket ticket) {
+            log.info("[NOTIFICA UTENTE] Email inviata a {}: ticket #{} risolto.", ticket.getAuthorEmail(), ticket.getId());
+        }
+    }
 }

@@ -17,7 +17,6 @@ package it.uniroma2.dicii.ispw.supportdesk.controller.applicativo;
 import it.uniroma2.dicii.ispw.supportdesk.dao.PersistenceLayer;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
-import it.uniroma2.dicii.ispw.supportdesk.exception.SLAViolatedException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
@@ -42,18 +41,6 @@ public class SLAController {
             log.warn("SLA violato per ticket {}", ticketId);
         }
         return violated;
-    }
-
-    public void checkSLA(Ticket ticket, TicketController ticketController)
-            throws SLAViolatedException {
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(ticket.getScadenzaSla())) {
-            ticketController.notifyObservers(EventType.SLA_VIOLATO, ticket);
-            throw new SLAViolatedException("SLA violato per ticket " + ticket.getId());
-        }
-        if (!now.isBefore(ticket.getScadenzaSla().minusHours(SLA_WARNING_HOURS))) {
-            ticketController.notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
-        }
     }
 
     public List<TicketRecord> getTicketsWithSlaExpiringSoon() throws DAOException {

@@ -31,13 +31,19 @@ import it.uniroma2.dicii.ispw.supportdesk.utility.observer.TicketSubject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class TicketController implements TicketSubject {
 
     private static final Logger log = LoggerFactory.getLogger(TicketController.class);
+    private static final long SLA_WARNING_HOURS = 2;
 
     private final List<TicketObserver> observers = new CopyOnWriteArrayList<>();
 
@@ -96,20 +102,54 @@ public class TicketController implements TicketSubject {
         ticket.cambiaStato(newStatus);
         PersistenceLayer.getInstance().updateTicket(ticket);
         notifyObservers(EventType.TICKET_CAMBIO_STATO, ticket);
+        if (newStatus == TicketStatus.RESOLVED) {
+            notifyObservers(EventType.TICKET_RISOLTO, ticket);
+        }
         log.info("Ticket {} passato a stato {}", id, newStatus);
         return toRecord(ticket);
     }
 
+    public void schedulaSlaTimer(Ticket ticket) {
+        LocalDateTime now = LocalDateTime.now();
+        long msToExpiry = Duration.between(now, ticket.getScadenzaSla()).toMillis();
+        long msToWarning = Duration.between(now, ticket.getScadenzaSla().minusHours(SLA_WARNING_HOURS)).toMillis();
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        if (msToExpiry <= 0) {
+            notifyObservers(EventType.SLA_VIOLATO, ticket);
+            scheduler.shutdown();
+            return;
+        }
+
+        if (msToWarning > 0) {
+            scheduler.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),
+                    msToWarning, TimeUnit.MILLISECONDS);
+        } else {
+            notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
+        }
+
+        scheduler.schedule(() -> {
+            try {
+                Ticket current = PersistenceLayer.getInstance().getTicketById(ticket.getId());
+                if (!isTerminated(current)) {
+                    notifyObservers(EventType.SLA_VIOLATO, current);
+                }
+            } catch (Exception e) {
+                log.warn("Controllo SLA fallito per ticket {}", ticket.getId());
+            } finally {
+                scheduler.shutdown();
+            }
+        }, msToExpiry, TimeUnit.MILLISECONDS);
+    }
+
+    private boolean isTerminated(Ticket t) {
+        return t.getStatus() == TicketStatus.RESOLVED || t.getStatus() == TicketStatus.CLOSED;
+    }
+
     private void launchBackgroundTasks(Ticket ticket) {
         int id = ticket.getId();
-
-        Thread sla = new Thread(() -> {
-            try {
-                new SLAController().checkSLA(ticket, this);
-            } catch (Exception e) {
-                log.info("SLA monitoring non disponibile per ticket {}", id);
-            }
-        });
+        schedulaSlaTimer(ticket);
 
         Thread correlation = new Thread(() -> {
             try {
@@ -120,10 +160,8 @@ public class TicketController implements TicketSubject {
         });
 
         Thread coordinator = new Thread(() -> {
-            sla.start();
             correlation.start();
             try {
-                sla.join();
                 correlation.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
