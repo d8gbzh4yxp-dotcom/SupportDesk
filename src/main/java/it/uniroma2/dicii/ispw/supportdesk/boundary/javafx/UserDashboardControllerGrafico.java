@@ -33,6 +33,8 @@ import java.util.List;
 
 public class UserDashboardControllerGrafico extends AbstractDashboardControllerGrafico {
 
+    private static final String ERR_TITLE = "Errore";
+
     @FXML private Label    welcomeLabel;
     @FXML private Label    actionErrorLabel;
     @FXML private Button   btnRiapri;
@@ -99,7 +101,7 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
             commentField.clear();
         } catch (DAOException e) {
             log.error("Errore aggiunta commento al ticket {}", selected.id(), e);
-            showError("Errore", "Impossibile salvare il commento.");
+            showError(ERR_TITLE, "Impossibile salvare il commento.");
         } catch (SupportDeskException e) {
             actionErrorLabel.setText(e.getMessage());
         }
@@ -120,7 +122,7 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
             ticketTable.getSelectionModel().clearSelection();
         } catch (DAOException e) {
             log.error("Errore riapertura ticket {}", selected.id(), e);
-            showError("Errore", "Errore interno del sistema.");
+            showError(ERR_TITLE, "Errore interno del sistema.");
         } catch (SupportDeskException e) {
             actionErrorLabel.setText(e.getMessage());
         }
@@ -150,7 +152,7 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
             log.error("Errore caricamento ticket utente", e);
-            showError("Errore", "Impossibile caricare i ticket.");
+            showError(ERR_TITLE, "Impossibile caricare i ticket.");
         }
     }
 

@@ -122,25 +122,27 @@ public class TicketController implements TicketSubject {
             return;
         }
 
-        if (msToWarning > 0) {
-            scheduler.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),
-                    msToWarning, TimeUnit.MILLISECONDS);
-        } else {
-            notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
-        }
-
-        scheduler.schedule(() -> {
-            try {
-                Ticket current = PersistenceLayer.getInstance().getTicketById(ticket.getId());
-                if (!isTerminated(current)) {
-                    notifyObservers(EventType.SLA_VIOLATO, current);
-                }
-            } catch (Exception e) {
-                log.warn("Controllo SLA fallito per ticket {}", ticket.getId());
-            } finally {
-                scheduler.shutdown();
+        try {
+            if (msToWarning > 0) {
+                scheduler.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),
+                        msToWarning, TimeUnit.MILLISECONDS);
+            } else {
+                notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
             }
-        }, msToExpiry, TimeUnit.MILLISECONDS);
+
+            scheduler.schedule(() -> {
+                try {
+                    Ticket current = PersistenceLayer.getInstance().getTicketById(ticket.getId());
+                    if (!isTerminated(current)) {
+                        notifyObservers(EventType.SLA_VIOLATO, current);
+                    }
+                } catch (Exception e) {
+                    log.warn("Controllo SLA fallito per ticket {}", ticket.getId());
+                }
+            }, msToExpiry, TimeUnit.MILLISECONDS);
+        } finally {
+            scheduler.shutdown();
+        }
     }
 
     private boolean isTerminated(Ticket t) {

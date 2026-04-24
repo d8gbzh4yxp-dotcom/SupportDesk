@@ -50,7 +50,9 @@ public class AssignmentController {
         ticket.setAssignedTechnician(technician);
         ticket.cambiaStato(TicketStatus.ASSIGNED);
         PersistenceLayer.getInstance().updateTicket(ticket);
-        log.info("Ticket {} assegnato a {}", ticket.getId(), technician.obtainEmail());
+        if (log.isInfoEnabled()) {
+            log.info("Ticket {} assegnato a {}", ticket.getId(), technician.obtainEmail());
+        }
     }
 
     private AssignmentHandler buildChain(Map<String, Integer> workloadMap) {

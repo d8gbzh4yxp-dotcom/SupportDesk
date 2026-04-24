@@ -20,7 +20,6 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
-import it.uniroma2.dicii.ispw.supportdesk.utility.observer.EventType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
