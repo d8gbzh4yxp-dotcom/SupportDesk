@@ -14,15 +14,16 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.dao;
 
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.CommentDAODemo;
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.TicketDAODemo;
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.UserDAODemo;
+import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
+import it.uniroma2.dicii.ispw.supportdesk.model.Comment;
 
-public class PersistenceLayerDemo extends PersistenceLayer {
+import java.util.List;
 
-    public PersistenceLayerDemo() {
-        this.ticketDAO  = new TicketDAODemo();
-        this.userDAO    = new UserDAODemo();
-        this.commentDAO = new CommentDAODemo();
-    }
+public interface CommentDAO {
+
+    void insert(Comment comment) throws DAOException;
+
+    List<Comment> findByTicketId(int ticketId) throws DAOException;
+
+    List<Comment> findAll() throws DAOException;
 }

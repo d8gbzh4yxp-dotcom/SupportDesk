@@ -12,17 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package it.uniroma2.dicii.ispw.supportdesk.dao;
+package it.uniroma2.dicii.ispw.supportdesk.record;
 
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.CommentDAODemo;
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.TicketDAODemo;
-import it.uniroma2.dicii.ispw.supportdesk.dao.demo.UserDAODemo;
+import java.time.LocalDateTime;
 
-public class PersistenceLayerDemo extends PersistenceLayer {
-
-    public PersistenceLayerDemo() {
-        this.ticketDAO  = new TicketDAODemo();
-        this.userDAO    = new UserDAODemo();
-        this.commentDAO = new CommentDAODemo();
-    }
-}
+public record CommentRecord(int id, String authorEmail, String text, LocalDateTime createdAt) {}

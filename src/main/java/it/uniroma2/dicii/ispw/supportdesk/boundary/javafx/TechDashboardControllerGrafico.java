@@ -20,6 +20,7 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.KnowledgeBaseException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.SupportDeskException;
 import it.uniroma2.dicii.ispw.supportdesk.fx.SceneNavigator;
+import it.uniroma2.dicii.ispw.supportdesk.record.CommentRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.KnowledgeEntryRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.facade.ViewTicketsFacade;
@@ -47,6 +48,7 @@ public class TechDashboardControllerGrafico extends AbstractDashboardControllerG
     @FXML private TableColumn<TicketRecord, String>     colStatus;
     @FXML private TableColumn<TicketRecord, String>     colSla;
 
+    @FXML private ListView<String>  commentsList;
     @FXML private TextField         kbSearchField;
     @FXML private ListView<String>  kbResultsList;
 
@@ -68,6 +70,12 @@ public class TechDashboardControllerGrafico extends AbstractDashboardControllerG
                 });
 
         loadAssignedTickets();
+    }
+
+    @Override
+    protected void populateDetail(TicketRecord t) {
+        super.populateDetail(t);
+        loadComments(t.id());
     }
 
     @FXML
@@ -149,5 +157,19 @@ public class TechDashboardControllerGrafico extends AbstractDashboardControllerG
     public void onCloseDetail() {
         hideDetail();
         ticketTable.getSelectionModel().clearSelection();
+        if (commentsList != null) commentsList.getItems().clear();
+    }
+
+    private void loadComments(int ticketId) {
+        if (commentsList == null) return;
+        try {
+            List<CommentRecord> comments = ViewTicketsFacade.getInstance().getCommentsForTicket(ticketId);
+            List<String> display = comments.stream()
+                    .map(c -> "[" + c.authorEmail() + "] " + c.text())
+                    .toList();
+            commentsList.setItems(FXCollections.observableArrayList(display));
+        } catch (DAOException e) {
+            log.error("Errore caricamento commenti ticket {}", ticketId, e);
+        }
     }
 }

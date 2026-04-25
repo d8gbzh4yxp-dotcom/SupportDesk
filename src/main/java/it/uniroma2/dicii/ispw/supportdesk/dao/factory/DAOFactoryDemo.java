@@ -14,8 +14,10 @@
  */
 package it.uniroma2.dicii.ispw.supportdesk.dao.factory;
 
+import it.uniroma2.dicii.ispw.supportdesk.dao.CommentDAO;
 import it.uniroma2.dicii.ispw.supportdesk.dao.TicketDAO;
 import it.uniroma2.dicii.ispw.supportdesk.dao.UserDAO;
+import it.uniroma2.dicii.ispw.supportdesk.dao.demo.CommentDAODemo;
 import it.uniroma2.dicii.ispw.supportdesk.dao.demo.TicketDAODemo;
 import it.uniroma2.dicii.ispw.supportdesk.dao.demo.UserDAODemo;
 
@@ -29,5 +31,10 @@ public class DAOFactoryDemo extends DAOAbstractFactory {
     @Override
     public UserDAO createUserDAO() {
         return new UserDAODemo();
+    }
+
+    @Override
+    public CommentDAO createCommentDAO() {
+        return new CommentDAODemo();
     }
 }

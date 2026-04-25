@@ -18,6 +18,7 @@ import it.uniroma2.dicii.ispw.supportdesk.enumerator.ApplicationMode;
 import it.uniroma2.dicii.ispw.supportdesk.enumerator.Role;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
+import it.uniroma2.dicii.ispw.supportdesk.model.Comment;
 import it.uniroma2.dicii.ispw.supportdesk.model.Ticket;
 import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import it.uniroma2.dicii.ispw.supportdesk.utility.singleton.ApplicationModeManager;
@@ -26,8 +27,9 @@ import java.util.List;
 
 public abstract class PersistenceLayer {
 
-    protected TicketDAO ticketDAO;
-    protected UserDAO   userDAO;
+    protected TicketDAO   ticketDAO;
+    protected UserDAO     userDAO;
+    protected CommentDAO  commentDAO;
 
     public static PersistenceLayer getInstance() {
         ApplicationMode mode = ApplicationModeManager.getInstance().getMode();
@@ -75,5 +77,19 @@ public abstract class PersistenceLayer {
 
     public void insertUser(User user) throws DAOException {
         userDAO.insert(user);
+    }
+
+    // ── Comment ───────────────────────────────────────────────────────────────
+
+    public void saveComment(Comment comment) throws DAOException {
+        commentDAO.insert(comment);
+    }
+
+    public List<Comment> findCommentsByTicketId(int ticketId) throws DAOException {
+        return commentDAO.findByTicketId(ticketId);
+    }
+
+    public List<Comment> findAllComments() throws DAOException {
+        return commentDAO.findAll();
     }
 }

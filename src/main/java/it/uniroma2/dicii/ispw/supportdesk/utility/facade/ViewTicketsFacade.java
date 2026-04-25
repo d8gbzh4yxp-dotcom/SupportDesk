@@ -22,6 +22,8 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
+import it.uniroma2.dicii.ispw.supportdesk.model.Comment;
+import it.uniroma2.dicii.ispw.supportdesk.record.CommentRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.UserNotificationObserver;
 
@@ -61,5 +63,11 @@ public final class ViewTicketsFacade {
     public void addComment(CommentBean bean)
             throws ValidationException, DAOException {
         commentController.addComment(bean.getTicketId(), bean.getAuthorEmail(), bean.getText());
+    }
+
+    public List<CommentRecord> getCommentsForTicket(int ticketId) throws DAOException {
+        return commentController.getCommentsForTicket(ticketId).stream()
+                .map(c -> new CommentRecord(c.getId(), c.getAuthorEmail(), c.getText(), c.getCreatedAt()))
+                .toList();
     }
 }

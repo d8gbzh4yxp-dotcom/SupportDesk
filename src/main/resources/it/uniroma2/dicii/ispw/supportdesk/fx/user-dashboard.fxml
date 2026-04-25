@@ -129,6 +129,11 @@
                         <Label fx:id="detailTechnician" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
                     </GridPane>
                     <Separator/>
+                    <Label text="Commenti:"
+                           style="-fx-font-weight: bold; -fx-text-fill: #455A64; -fx-font-size: 12px;"/>
+                    <ListView fx:id="commentsList" prefHeight="90"
+                              style="-fx-border-color: #90CAF9; -fx-border-radius: 4;"/>
+                    <Separator/>
                     <Label text="Aggiungi un commento:"
                            style="-fx-font-weight: bold; -fx-text-fill: #455A64; -fx-font-size: 12px;"/>
                     <HBox spacing="8" alignment="CENTER_LEFT">

@@ -19,6 +19,7 @@ import it.uniroma2.dicii.ispw.supportdesk.enumerator.TicketStatus;
 import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.SupportDeskException;
 import it.uniroma2.dicii.ispw.supportdesk.fx.SceneNavigator;
+import it.uniroma2.dicii.ispw.supportdesk.record.CommentRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.LoginRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.facade.ViewTicketsFacade;
@@ -37,8 +38,9 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
 
     @FXML private Label    welcomeLabel;
     @FXML private Label    actionErrorLabel;
-    @FXML private Button   btnRiapri;
-    @FXML private TextArea commentField;
+    @FXML private Button            btnRiapri;
+    @FXML private TextArea          commentField;
+    @FXML private ListView<String>  commentsList;
 
     @FXML private TableView<TicketRecord>               ticketTable;
     @FXML private TableColumn<TicketRecord, Integer>    colId;
@@ -77,6 +79,7 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
         btnRiapri.setVisible(isResolved);
         btnRiapri.setManaged(isResolved);
         if (commentField != null) commentField.clear();
+        loadComments(t.id());
     }
 
     @FXML
@@ -99,6 +102,7 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
         try {
             ViewTicketsFacade.getInstance().addComment(bean);
             commentField.clear();
+            loadComments(selected.id());
         } catch (DAOException e) {
             log.error("Errore aggiunta commento al ticket {}", selected.id(), e);
             showError(ERR_TITLE, "Impossibile salvare il commento.");
@@ -162,7 +166,21 @@ public class UserDashboardControllerGrafico extends AbstractDashboardControllerG
         ticketTable.getSelectionModel().clearSelection();
         actionErrorLabel.setText("");
         commentField.clear();
+        if (commentsList != null) commentsList.getItems().clear();
         btnRiapri.setVisible(false);
         btnRiapri.setManaged(false);
+    }
+
+    private void loadComments(int ticketId) {
+        if (commentsList == null) return;
+        try {
+            List<CommentRecord> comments = ViewTicketsFacade.getInstance().getCommentsForTicket(ticketId);
+            List<String> display = comments.stream()
+                    .map(c -> "[" + c.authorEmail() + "] " + c.text())
+                    .toList();
+            commentsList.setItems(FXCollections.observableArrayList(display));
+        } catch (DAOException e) {
+            log.error("Errore caricamento commenti ticket {}", ticketId, e);
+        }
     }
 }
