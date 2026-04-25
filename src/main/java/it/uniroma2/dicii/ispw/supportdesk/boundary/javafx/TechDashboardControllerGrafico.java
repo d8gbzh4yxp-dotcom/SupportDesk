@@ -132,7 +132,7 @@ public class TechDashboardControllerGrafico extends AbstractDashboardControllerG
         actionErrorLabel.setText("");
         try {
             List<TicketRecord> tickets = ViewTicketsFacade.getInstance()
-                    .getTicketsByUser(SessionContext.getCurrentUser().email());
+                    .getAllTickets();
             ticketTable.setItems(FXCollections.observableArrayList(tickets));
         } catch (DAOException e) {
             log.error("Errore caricamento ticket tecnico", e);

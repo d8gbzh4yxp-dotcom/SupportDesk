@@ -42,8 +42,9 @@ import java.util.concurrent.TimeUnit;
 
 public class TicketController implements TicketSubject {
 
-    private static final Logger log = LoggerFactory.getLogger(TicketController.class);
-    private static final long SLA_WARNING_HOURS = 2;
+    private static final Logger log             = LoggerFactory.getLogger(TicketController.class);
+    private static final long   SLA_WARNING_HOURS = 2;
+    private static final ScheduledExecutorService SLA_SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 
     private final List<TicketObserver> observers = new CopyOnWriteArrayList<>();
 
@@ -119,16 +120,14 @@ public class TicketController implements TicketSubject {
             return;
         }
 
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        try {
-            if (msToWarning > 0) {
-                scheduler.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),
-                        msToWarning, TimeUnit.MILLISECONDS);
-            } else {
-                notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
-            }
+        if (msToWarning > 0) {
+            SLA_SCHEDULER.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),
+                    msToWarning, TimeUnit.MILLISECONDS);
+        } else {
+            notifyObservers(EventType.SLA_IN_SCADENZA, ticket);
+        }
 
-            scheduler.schedule(() -> {
+        SLA_SCHEDULER.schedule(() -> {
                 try {
                     Ticket current = PersistenceLayer.getInstance().getTicketById(ticket.getId());
                     if (!isTerminated(current)) {
@@ -138,9 +137,6 @@ public class TicketController implements TicketSubject {
                     log.warn("Controllo SLA fallito per ticket {}", ticket.getId());
                 }
             }, msToExpiry, TimeUnit.MILLISECONDS);
-        } finally {
-            scheduler.shutdown();
-        }
     }
 
     private boolean isTerminated(Ticket t) {
