@@ -37,7 +37,8 @@ public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     private static final String DEMO_CREDENTIAL_HASH = "DEMO_HASH_PLACEHOLDER";
-    private static final String SHA_256 = "SHA-256";
+    private static final String SHA_256         = "SHA-256";
+    private static final String ERR_CREDENZIALI = "Credenziali non valide";
 
     public LoginRecord authenticate(LoginBean bean)
             throws ValidationException, AuthenticationException, DAOException {
@@ -46,7 +47,7 @@ public class LoginController {
         }
         User user = PersistenceLayer.getInstance().findUserByEmail(bean.getEmail());
         if (user == null) {
-            throw new AuthenticationException("Credenziali non valide");
+            throw new AuthenticationException(ERR_CREDENZIALI);
         }
         String inputHash = sha256(bean.getPassword());
         verifyPassword(inputHash, user);
@@ -63,7 +64,7 @@ public class LoginController {
             valid = user.obtainPasswordHash().equals(inputHash);
         }
         if (!valid) {
-            throw new AuthenticationException("Credenziali non valide");
+            throw new AuthenticationException(ERR_CREDENZIALI);
         }
     }
 

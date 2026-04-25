@@ -114,14 +114,12 @@ public class TicketController implements TicketSubject {
         long msToExpiry = Duration.between(now, ticket.getScadenzaSla()).toMillis();
         long msToWarning = Duration.between(now, ticket.getScadenzaSla().minusHours(SLA_WARNING_HOURS)).toMillis();
 
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
         if (msToExpiry <= 0) {
             notifyObservers(EventType.SLA_VIOLATO, ticket);
-            scheduler.shutdown();
             return;
         }
 
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         try {
             if (msToWarning > 0) {
                 scheduler.schedule(() -> notifyObservers(EventType.SLA_IN_SCADENZA, ticket),

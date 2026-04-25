@@ -22,6 +22,9 @@ import java.io.IOException;
 
 public final class SceneNavigator {
 
+    private static final int SCENE_WIDTH  = 1100;
+    private static final int SCENE_HEIGHT = 700;
+
     private static Stage stage;
 
     private SceneNavigator() {}
@@ -36,7 +39,7 @@ public final class SceneNavigator {
     public static void navigateTo(String fxml, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 SceneNavigator.class.getResource(fxml));
-        Scene scene = new Scene(loader.load(), 1100, 700);
+        Scene scene = new Scene(loader.load(), SCENE_WIDTH, SCENE_HEIGHT);
         stage.setTitle("SupportDesk — " + title);
         stage.setScene(scene);
         stage.show();

@@ -24,7 +24,7 @@ public class ByExpertiseStrategy implements AssignmentStrategy {
 
     @Override
     public User assign(Ticket ticket, List<User> technicians) throws AssignmentException {
-        if (technicians.isEmpty()) throw new AssignmentException("Nessun tecnico disponibile");
+        if (technicians.isEmpty()) throw new AssignmentException(ERR_NESSUN_TECNICO);
         String category = ticket.getCategory().name();
         for (User tech : technicians) {
             if (category.equalsIgnoreCase(tech.obtainSpecialization())) return tech;

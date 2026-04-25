@@ -58,10 +58,10 @@ public class TechDashboardControllerGrafico extends AbstractDashboardControllerG
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>(PROP_CATEGORY));
+        colPriority.setCellValueFactory(new PropertyValueFactory<>(PROP_PRIORITY));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        colSla.setCellValueFactory(new PropertyValueFactory<>("scadenzaSla"));
+        colSla.setCellValueFactory(new PropertyValueFactory<>(PROP_SCADENZA_SLA));
 
         ticketTable.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldVal, newVal) -> {

@@ -1,0 +1,7 @@
+2026-04-25 04:38:20.526 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.LoginController - Autenticazione riuscita per giovanni.rossi@azienda.it
+2026-04-25 04:38:54.433 [JavaFX Application Thread] INFO  i.u.d.i.s.u.o.TechnicianNotificationObserver - [NOTIFICA TECNICI] Email inviata ai tecnici: nuovo ticket #11 in coda — boh.
+2026-04-25 04:38:54.434 [JavaFX Application Thread] INFO  i.u.d.i.s.u.o.ManagerNotificationObserver - [NOTIFICA MANAGER] Email inviata al manager: nuovo ticket #11 aperto — boh.
+2026-04-25 04:38:54.438 [JavaFX Application Thread] INFO  i.u.d.i.s.c.a.TicketController - Ticket 11 aperto da giovanni.rossi@azienda.it
+2026-04-25 04:38:54.455 [Thread-4] INFO  i.u.d.i.s.c.a.AssignmentController - Ticket 11 assegnato a marco.bianchi@supportdesk.it
+2026-04-25 04:38:54.455 [Thread-4] INFO  i.u.d.i.s.u.o.TechnicianNotificationObserver - [NOTIFICA TECNICO] Ticket #11 assegnato a Marco Bianchi — boh
+2026-04-25 04:38:54.455 [Thread-4] INFO  i.u.d.i.s.u.o.ManagerNotificationObserver - [NOTIFICA MANAGER] Ticket #11 cambiato stato → ASSIGNED

@@ -26,6 +26,10 @@ public abstract class AbstractDashboardControllerGrafico {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    protected static final String PROP_CATEGORY     = "category";
+    protected static final String PROP_PRIORITY     = "priority";
+    protected static final String PROP_SCADENZA_SLA = "scadenzaSla";
+
     @FXML protected VBox  detailPanel;
     @FXML protected Label detailId;
     @FXML protected Label detailTitle;

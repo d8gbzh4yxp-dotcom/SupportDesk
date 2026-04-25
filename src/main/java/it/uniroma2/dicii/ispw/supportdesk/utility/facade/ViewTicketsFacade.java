@@ -22,7 +22,6 @@ import it.uniroma2.dicii.ispw.supportdesk.exception.DAOException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.InvalidTransitionException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.TicketNotFoundException;
 import it.uniroma2.dicii.ispw.supportdesk.exception.ValidationException;
-import it.uniroma2.dicii.ispw.supportdesk.model.Comment;
 import it.uniroma2.dicii.ispw.supportdesk.record.CommentRecord;
 import it.uniroma2.dicii.ispw.supportdesk.record.TicketRecord;
 import it.uniroma2.dicii.ispw.supportdesk.utility.observer.UserNotificationObserver;

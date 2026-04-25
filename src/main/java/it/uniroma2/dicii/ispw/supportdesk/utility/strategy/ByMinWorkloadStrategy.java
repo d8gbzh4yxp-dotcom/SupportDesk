@@ -31,7 +31,7 @@ public class ByMinWorkloadStrategy implements AssignmentStrategy {
 
     @Override
     public User assign(Ticket ticket, List<User> technicians) throws AssignmentException {
-        if (technicians.isEmpty()) throw new AssignmentException("Nessun tecnico disponibile");
+        if (technicians.isEmpty()) throw new AssignmentException(ERR_NESSUN_TECNICO);
         User best = technicians.get(0);
         int minLoad = workloadByEmail.getOrDefault(best.obtainEmail(), 0);
         for (User tech : technicians) {

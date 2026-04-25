@@ -21,5 +21,6 @@ import it.uniroma2.dicii.ispw.supportdesk.model.User;
 import java.util.List;
 
 public interface AssignmentStrategy {
+    String ERR_NESSUN_TECNICO = "Nessun tecnico disponibile";
     User assign(Ticket ticket, List<User> technicians) throws AssignmentException;
 }

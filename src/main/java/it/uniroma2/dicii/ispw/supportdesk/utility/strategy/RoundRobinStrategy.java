@@ -27,7 +27,7 @@ public class RoundRobinStrategy implements AssignmentStrategy {
 
     @Override
     public User assign(Ticket ticket, List<User> technicians) throws AssignmentException {
-        if (technicians.isEmpty()) throw new AssignmentException("Nessun tecnico disponibile");
+        if (technicians.isEmpty()) throw new AssignmentException(ERR_NESSUN_TECNICO);
         return technicians.get(COUNTER.getAndIncrement() % technicians.size());
     }
 }

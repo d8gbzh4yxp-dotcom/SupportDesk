@@ -34,7 +34,6 @@ public class ManagerDashboardControllerGrafico extends AbstractDashboardControll
 
     private static final String COL_TITLE = "title";
     private static final String COL_STATUS = "status";
-    private static final String COL_SCADENZA_SLA = "scadenzaSla";
     private static final String ERR_TITLE = "Errore";
 
     private final CorrelationController correlationController = new CorrelationController();
@@ -151,27 +150,27 @@ public class ManagerDashboardControllerGrafico extends AbstractDashboardControll
     private void bindAllTicketsTable() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>(PROP_CATEGORY));
+        colPriority.setCellValueFactory(new PropertyValueFactory<>(PROP_PRIORITY));
         colStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
         colTech.setCellValueFactory(new PropertyValueFactory<>("assignedTechnicianName"));
-        colSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
+        colSla.setCellValueFactory(new PropertyValueFactory<>(PROP_SCADENZA_SLA));
     }
 
     private void bindSlaTable() {
         slaColId.setCellValueFactory(new PropertyValueFactory<>("id"));
         slaColTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
-        slaColPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        slaColPriority.setCellValueFactory(new PropertyValueFactory<>(PROP_PRIORITY));
         slaColStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
-        slaColSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
+        slaColSla.setCellValueFactory(new PropertyValueFactory<>(PROP_SCADENZA_SLA));
     }
 
     private void bindCorrelatedTable() {
         corrColId.setCellValueFactory(new PropertyValueFactory<>("id"));
         corrColTitle.setCellValueFactory(new PropertyValueFactory<>(COL_TITLE));
-        corrColCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        corrColCategory.setCellValueFactory(new PropertyValueFactory<>(PROP_CATEGORY));
         corrColStatus.setCellValueFactory(new PropertyValueFactory<>(COL_STATUS));
-        corrColSla.setCellValueFactory(new PropertyValueFactory<>(COL_SCADENZA_SLA));
+        corrColSla.setCellValueFactory(new PropertyValueFactory<>(PROP_SCADENZA_SLA));
     }
 
     @FXML
